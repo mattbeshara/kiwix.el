@@ -1,0 +1,61 @@
+* How does this extension work?
+
+** integrate with Emacs
+
+*** core
+
+I found Kiwix will return a URL like this:
+
+#+BEGIN_EXAMPLE
+http://127.0.0.1:8000/wikinews_en_all_2015-11/A/Big_Linux_Beta_3_released.html
+____________________  _____________________  __  _____________________________
+
+< server address >    < library >                <one of the returned results>
+#+END_EXAMPLE
+
+*** steps
+
+1. auto start ~kiwix-serve~ HTTP server.
+2. query/search on kiwix server.
+   1. open kiwix server index page to input to search. (But this is slow, waste time)
+   2. use http language binding library to query on kiwix HTTP server.
+      1. select library in library list page.
+      2. after load a library, simulate type query string in the search input
+         box, the submit to search.
+      3. return the result page HTML or page URL.
+      4. view the result with page URL or page HTML with Emacs browser.
+
+*** auto start kiwix HTTP server
+
+Here is a simple script, you can put it in Linux "*auto-start*".
+
+#+BEGIN_SRC sh :tangle "~/scripts/kiwix-server.sh"
+#!/usr/bin/env sh
+
+/usr/lib/kiwix/bin/kiwix-serve --library --port=8000 --daemon ~/.www.kiwix.org/kiwix/8ip89lik.default/data/library/library.xml
+#+END_SRC
+
+*** search
+
+1. kiwix-search command -> return a list of results.
+
+   #+BEGIN_SRC sh
+   /usr/lib/kiwix/bin/kiwix-search ~/.www.kiwix.org/kiwix/8ip89lik.default/data/index/wikinews_en_all_2015-11.zim.idx linux
+   #+END_SRC
+
+2. use one element of list as part of the URL.
+
+   http://127.0.0.1:8000/wikinews_en_all_2015-11/A/Big_Linux_Beta_3_released.html
+
+   #+BEGIN_SRC emacs-lisp
+   (browse-url (concat "http://127.0.0.1:8000/" "LIBRARY" "A" "RESULT"))
+   #+END_SRC
+
+
+*** more advanced?
+
+If you want more advanced functions, you can use communicate kiwix HTTP server
+with RESTful API.
+
+- I don't know what Emacs library to use.
+- Or you can use other language to do this, like Ruby or Python etc.
