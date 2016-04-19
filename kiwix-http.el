@@ -1,4 +1,4 @@
-;;; kiwix.el --- Emacs client to Kiwix.
+;;; kiwix-http.el
 ;;; -*- coding: utf-8 -*-
 
 ;;; Commentary:
@@ -72,6 +72,6 @@ Return a list of results."
 
 
 
-(provide 'kiwix)
+(provide 'kiwix-http)
 
-;;; kiwix.el ends here
+;;; kiwix-http.el ends here
