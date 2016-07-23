@@ -1,9 +1,22 @@
 ;;; kiwix.el --- Kiwix interface and support for Emacs.
 ;;; -*- coding: utf-8 -*-
 
+;; Author: stardiviner <numbchild@gmail.com>
+;; Maintainer: stardiviner <numbchild@gmail.com>
+;; Keywords: kiwix wikipedia
+;; URL: https://github.com/stardiviner/kiwix.el
+;; Created: 23th July 2016
+;; Version: 0.1.0
+;; Package-Requires: ((emacs "24.3") (cl-lib "2"))
+
 ;;; Commentary:
 
+;;; This currently only works for Linux, not tested for Mac OS X and Windows.
 
+;;; Usage:
+;;
+;; [M-x kiwix-launch-server] to launch Kiwix server.
+;; [M-x kiwix-at-point] to search the word under point or the region selected string.
 
 ;;; Code:
 
