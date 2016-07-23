@@ -22,11 +22,26 @@
 
 
 (defgroup kiwix nil
-  "kiwix group."
-  :group 'custom-group)
+  "Kiwix customization options.")
+
+(defcustom kiwix-server-command "/usr/lib/kiwix/bin/kiwix-serve "
+  "Specify kiwix server command."
+  :type 'string
+  :group 'kiwix)
+
+(defcustom kiwix-default-data-path "8ip89lik.default"
+  "Specify the default Kiwix data profile path."
+  :type 'string
+  :group 'kiwix)
 
 (defcustom kiwix-default-library "wikipedia_en_all_2016-02"
   "Specify the default Kiwix library you want to search."
+  :type 'string
+  :group 'kiwix)
+
+(defcustom kiwix-server-port "8000"
+  "Specify the default Kiwix server port."
+  :type 'string
   :group 'kiwix)
 
 ;; launch Kiwix server
