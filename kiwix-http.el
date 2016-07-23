@@ -8,12 +8,28 @@
 ;;; Code:
 
 
+(require 'cl-lib)
+
+;; FIXME:
+;; should use a standard where function to find path.
+;; you may can define a function instead or a constant holding the relative path, then make use of it when needed.
 (defcustom kiwix-search-command "/usr/lib/kiwix/bin/kiwix-search"
   "The kiwix-search command path."
-  :group 'kiwix)
+  :type 'string
+  :group 'kiwix
+  :safe 'stringp)
 (defcustom kiwix-data-profile-path "~/.www.kiwix.org/kiwix/8ip89lik.default/"
   "The kiwix profile data directory."
-  :group 'kiwix)
+  :type 'string
+  :group 'kiwix
+  :safe 'stringp)
+
+;; TODO: replace `browse-url'
+(defcustom kiwix-browser-function 'browse-url-conkeror
+  "Specify browser function to open kiwix search result."
+  :type 'function
+  :group 'kiwix
+  :safe 'functionp)
 
 (defvar kiwix-data-index-path nil)
 
