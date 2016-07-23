@@ -88,24 +88,6 @@ Return a list of results."
     )
   )
 
-;; TODO: finnally, write a function to reterive the values from the last command.
-
-;; final function
-;;;###autoload
-(defun kiwix-at-point (&optional edit-search)
-  "Search for the word at point in Kiwix."
-  (interactive "P")
-  (let* ((thing (if mark-active
-                    (buffer-substring (region-beginning) (region-end))
-                  (thing-at-point 'symbol)))
-         (search (kiwix-maybe-specify-library thing)))
-    (kiwix-run-search
-     (if (or edit-search (null thing))
-         (read-string "Kiwix search: " search)
-       search))))
-
-;; TODO: add org-mode protocol support: `wiki_offline:'
-
 
 (provide 'kiwix-http)
 
