@@ -90,7 +90,7 @@
 ;;; Support Org-mode
 ;; [[wiki:]]
 ;; for open wiki search query with local application database.
-(defalias 'org-wiki-link-open 'kiwix-search)
+(defalias 'org-wiki-link-open 'kiwix-query)
 
 (if kiwix-support-org-mode-link-type
     (org-add-link-type "wiki" 'org-wiki-link-open))
