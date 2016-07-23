@@ -44,6 +44,16 @@
   :type 'string
   :group 'kiwix)
 
+(defcustom kiwix-support-org-mode-link-type t
+  "Add support for Org-mode Kiwix link type."
+  :type 'boolean
+  :group 'kiwix)
+
+(defcustom kiwix-support-org-mode-link-abbrev t
+  "Add support for Org-mode Kiwix link abbrev."
+  :type 'boolean
+  :group 'kiwix)
+
 ;; launch Kiwix server
 ;;;###autoload
 (defun kiwix-launch-server ()
@@ -82,10 +92,12 @@
 ;; for open wiki search query with local application database.
 (defalias 'org-wiki-link-open 'kiwix-search)
 
-(org-add-link-type "wiki" 'org-wiki-link-open)
+(if kiwix-support-org-mode-link-type
+    (org-add-link-type "wiki" 'org-wiki-link-open))
 
 ;; [[Wikipedia_Local:]]
 (if (and
+     kiwix-support-org-mode-link-abbrev
      (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
      (assoc "Wikipedia_Local" org-link-abbrev-alist))
     
