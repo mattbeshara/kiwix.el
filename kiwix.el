@@ -41,7 +41,7 @@
   (let* ((browser kiwix-browser)
          (kiwix-server "http://127.0.0.1:8000/")
          (kiwix-library kiwix-default-library)
-         (url (concat kiwix-server kiwix-library "/A/" query ".html")))
+         (url (concat kiwix-server kiwix-library "/A/" (capitalize query) ".html")))
     (shell-command (concat browser " " url))))
 
 ;;;###autoload
