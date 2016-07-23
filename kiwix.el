@@ -34,8 +34,13 @@
   :type 'string
   :group 'kiwix)
 
-(defcustom kiwix-default-data-path "8ip89lik.default"
+(defcustom kiwix-default-data-profile-name "8ip89lik.default"
   "Specify the default Kiwix data profile path."
+  :type 'string
+  :group 'kiwix)
+
+(defcustom kiwix-default-data-path (shell-quote-argument (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
+  "Specify the default Kiwix data path."
   :type 'string
   :group 'kiwix)
 
@@ -59,6 +64,9 @@
   :type 'boolean
   :group 'kiwix)
 
+(defvar kiwix-libraries (directory-files (concat kiwix-default-data-path "/data/content/") nil "\.zim")
+  "A list of Kiwix libraries.")
+
 ;; launch Kiwix server
 ;;;###autoload
 (defun kiwix-launch-server ()
@@ -68,7 +76,7 @@
   (let ((library "--library ")
         (port (concat "--port=" kiwix-server-port " "))
         (daemon "--daemon ")
-        (library-path (shell-quote-argument (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-path "/data/library/library.xml")))
+        (library-path (concat kiwix-default-data-path "/data/library/library.xml"))
         )
     (async-shell-command
      (concat kiwix-server-command library port daemon library-path))))
@@ -83,15 +91,24 @@
     (browse-url url)))
 
 ;;;###autoload
-(defun kiwix-at-point (&optional input)
-  "Search for the symbol at point with `kiwix-query' with `INPUT'."
+(defun kiwix-at-point (&optional interactively)
+  "Search for the symbol at point with `kiwix-query'.
+
+Or When prefix argument `INTERACTIVELY' specified, then prompt
+for query string and library interactively."
   (interactive "P")
-  (let* ((query-string (if mark-active
-                           (buffer-substring (region-beginning) (region-end))
-                         (thing-at-point 'symbol))))
-    (kiwix-query (if (or input (null query-string))
-                     (read-string "Kiwix search: " query-string-input)
-                   query-string))))
+  (let* ((query-string (if interactively
+                           (read-string "Kiwix Search: "
+                                        (if mark-active
+                                            (buffer-substring
+                                             (region-beginning) (region-end))
+                                          (thing-at-point 'symbol)))))
+         (library (when interactively
+                    (completing-read "Kiwix Library: "
+                                     (mapcar #'(lambda (var)
+                                                 (replace-regexp-in-string "\.zim" "" var))
+                                             kiwix-libraries)))))
+    (kiwix-query query-string library)))
 
 ;;; Support Org-mode
 ;; [[wiki:]]
