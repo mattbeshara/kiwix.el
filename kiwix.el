@@ -16,7 +16,7 @@
   "Specify browser for Kiwix visiting."
   :group 'kiwix)
 
-(defcustom kiwix-default-library "wikipedia_zh_all_2015-11"
+(defcustom kiwix-default-library "wikipedia_en_all_2016-02"
   "Specify the default Kiwix library you want to search."
   :group 'kiwix)
 
