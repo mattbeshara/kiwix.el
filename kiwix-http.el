@@ -38,17 +38,16 @@
 (defun kiwix-serve-index ()
   "Open kiwix HTTP server index page."
   (interactive)
-  ;; (browse-url "http://127.0.0.1:8000")
-  (browse-url-conkeror "http://127.0.0.1:8000")
+  (browse-url "http://127.0.0.1:8000")
   )
 
 (defun kiwix-libraries ()
   "Get a list of dirs under a specific dir."
   ;; ~/.www.kiwix.org/kiwix/8ip89lik.default/data/content/*.zim
   (let ((libraries
-         ;; TODO: filter out ZIM files as libraries.
+         ;; TODO: use a filter function from cl-lib or dash to replace `mapcar'.
          (mapcar #'(lambda (file)
-                     (let ((zim-file (string-match-p ".*\\.zim" file)))
+                     (let ((zim-file (string-match-p ".*\\.zim\\'" file)))
                        zim-file))
                  (directory-files kiwix-data-index-path)
                  )))
@@ -57,6 +56,9 @@
 (defun kiwix-serve-search (library query)
   "Execute shell command `kiwix-search' on `LIBRARY' with `QUERY'.
 Return a list of results."
+
+  ;; TODO: don't use shell-command.
+  ;; use execute a process sync/async. check out in Elisp info.
   (let ((search-results (shell-command
                          (concat kiwix-search-command " "
                                  kiwix-data-profile-path kiwix-data-index-path
@@ -81,11 +83,28 @@ Return a list of results."
                  (list (completing-read
                         "select a result to visit: "
                         results)))))
-    (browse-url-conkeror
+    (browse-url
      (concat "http://127.0.0.1:8000/" library "/A/" result))
     )
   )
 
+;; TODO: finnally, write a function to reterive the values from the last command.
+
+;; final function
+;;;###autoload
+(defun kiwix-at-point (&optional edit-search)
+  "Search for the word at point in Kiwix."
+  (interactive "P")
+  (let* ((thing (if mark-active
+                    (buffer-substring (region-beginning) (region-end))
+                  (thing-at-point 'symbol)))
+         (search (kiwix-maybe-specify-library thing)))
+    (kiwix-run-search
+     (if (or edit-search (null thing))
+         (read-string "Kiwix search: " search)
+       search))))
+
+;; TODO: add org-mode protocol support: `wiki_offline:'
 
 
 (provide 'kiwix-http)
