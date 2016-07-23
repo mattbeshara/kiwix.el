@@ -7,6 +7,8 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
 (defgroup kiwix-at-point nil
   "Search in Kiwix for text at point."
   :group 'external)
