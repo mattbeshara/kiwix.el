@@ -50,14 +50,13 @@
   "Launch Kiwix server."
   (interactive)
   
-  (let ((kiwix-server-command "/usr/lib/kiwix/bin/kiwix-serve ")
-        (kiwix-server-library-option "--library ")
-        (kiwix-server-port "--port=8000 ")
-        (kiwix-server-daemon "--daemon ")
-        (kiwix-server-library-path (concat (getenv "HOME") "/.www.kiwix.org/kiwix/8ip89lik.default/data/library/library.xml"))
+  (let ((library "--library ")
+        (port (concat "--port=" kiwix-server-port " "))
+        (daemon "--daemon ")
+        (library-path (shell-quote-argument (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-path "/data/library/library.xml")))
         )
     (async-shell-command
-     (concat kiwix-server-command kiwix-server-library-option kiwix-server-port kiwix-server-daemon kiwix-server-library-path))))
+     (concat kiwix-server-command library port daemon library-path))))
 
 
 (defun kiwix-query (query)
