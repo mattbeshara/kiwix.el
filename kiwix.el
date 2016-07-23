@@ -63,9 +63,14 @@
 (org-add-link-type "wiki" 'org-wiki-link-open)
 
 ;; [[Wikipedia_Local:]]
-(add-to-list
- org-link-abbrev-alist
- '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html"))
+(if (and
+     (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
+     (assoc "Wikipedia_Local" org-link-abbrev-alist))
+    
+    (setq org-link-abbrev-alist
+          (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
+  )
+
 
 
 (provide 'kiwix)
