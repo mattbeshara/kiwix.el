@@ -1,4 +1,4 @@
-;;; kiwix.el --- Kiwix interface and support for Emacs.
+;;; kiwix.el --- Kiwix interface and support.
 ;;; -*- coding: utf-8 -*-
 
 ;; Author: stardiviner <numbchild@gmail.com>
