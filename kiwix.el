@@ -12,10 +12,6 @@
   "kiwix group."
   :group 'custom-group)
 
-(defcustom kiwix-browser "google-chrome-stable"
-  "Specify browser for Kiwix visiting."
-  :group 'kiwix)
-
 (defcustom kiwix-default-library "wikipedia_en_all_2016-02"
   "Specify the default Kiwix library you want to search."
   :group 'kiwix)
@@ -38,11 +34,10 @@
 
 (defun kiwix-query (query)
   "Search `QUERY' with Kiwix."
-  (let* ((browser kiwix-browser)
-         (kiwix-server "http://127.0.0.1:8000/")
+  (let* ((kiwix-server "http://127.0.0.1:8000/")
          (kiwix-library kiwix-default-library)
          (url (concat kiwix-server kiwix-library "/A/" (capitalize query) ".html")))
-    (shell-command (concat browser " " url))))
+    (browse-url url)))
 
 ;;;###autoload
 (defun kiwix-at-point (&optional input)
