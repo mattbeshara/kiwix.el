@@ -24,6 +24,11 @@
 (defgroup kiwix nil
   "Kiwix customization options.")
 
+(defcustom kiwix-server-url "http://127.0.0.1:8000/"
+  "Specify Kiwix server URL."
+  :type 'string
+  :group 'kiwix)
+
 (defcustom kiwix-server-command "/usr/lib/kiwix/bin/kiwix-serve "
   "Specify kiwix server command."
   :type 'string
@@ -69,11 +74,12 @@
      (concat kiwix-server-command library port daemon library-path))))
 
 
-(defun kiwix-query (query)
-  "Search `QUERY' with Kiwix."
-  (let* ((kiwix-server "http://127.0.0.1:8000/")
-         (kiwix-library kiwix-default-library)
-         (url (concat kiwix-server kiwix-library "/A/" (capitalize query) ".html")))
+(defun kiwix-query (query &optional library)
+  "Search `QUERY' in `LIBRARY' with Kiwix."
+  (let* ((kiwix-library (if library
+                            library
+                          kiwix-default-library))
+         (url (concat kiwix-server-url kiwix-library "/A/" (capitalize query) ".html")))
     (browse-url url)))
 
 ;;;###autoload
