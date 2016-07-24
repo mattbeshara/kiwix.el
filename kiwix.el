@@ -58,18 +58,33 @@
   :type 'string
   :group 'kiwix)
 
-(defcustom kiwix-support-org-mode-link-type t
-  "Add support for Org-mode Kiwix link type."
+(defcustom kiwix-support-org-mode-link t
+  "Add support for Org-mode Kiwix link."
   :type 'boolean
   :group 'kiwix)
 
-(defcustom kiwix-support-org-mode-link-abbrev t
-  "Add support for Org-mode Kiwix link abbrev."
-  :type 'boolean
-  :group 'kiwix)
-
-(defvar kiwix-libraries (directory-files (concat kiwix-default-data-path "/data/content/") nil "\.zim")
+(defvar kiwix-libraries (directory-files (concat kiwix-default-data-path "/data/content/") nil "wikipedia_.*_all_.*\.zim")
   "A list of Kiwix libraries.")
+
+(defun kiwix-select-library ()
+  "Select Wikipedia library full name."
+  (completing-read "Kiwix Library: "
+                   (mapcar #'(lambda (var)
+                               (replace-regexp-in-string "\.zim" "" var))
+                           kiwix-libraries)))
+
+(defvar kiwix-librarie-abbrev-list
+  ;; TODO:
+  '(("en" . (mapcar #'(lambda (var)
+                        (string-match-p "en" var))
+                    kiwix-libraries))
+    ("zh" . ())
+    ))
+
+(defun kiwix-select-library-abbrev ()
+  "Select Wikipedia library name abbrev."
+  (completing-read "Wikipedia library abbrev: "
+                   (map-keys kiwix-librarie-abbrev-list)))
 
 ;; launch Kiwix server
 ;;;###autoload
@@ -108,31 +123,78 @@ for query string and library interactively."
                                              (region-beginning) (region-end))
                                           (thing-at-point 'symbol)))))
          (library (when interactively
-                    (completing-read "Kiwix Library: "
-                                     (mapcar #'(lambda (var)
-                                                 (replace-regexp-in-string "\.zim" "" var))
-                                             kiwix-libraries)))))
+                    (kiwix-select-library))))
     (kiwix-query query-string library)))
 
 
 
 ;;; Support Org-mode
-;; [[wiki:]]
+;; [[wiki:(library):query]]
+;; elisp regexp: `\\(.*\\):(.*):.*'
 ;; for open wiki search query with local application database.
-(defalias 'org-wiki-link-open 'kiwix-query)
 
-(if kiwix-support-org-mode-link-type
-    (org-add-link-type "wiki" 'org-wiki-link-open))
+;; TODO: deprecated
+;; (defalias 'org-wiki-link-open 'kiwix-query)
 
-;; [[Wikipedia_Local:]]
-(if (and
-     kiwix-support-org-mode-link-abbrev
-     (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
-     (assoc "Wikipedia_Local" org-link-abbrev-alist))
+(defun org-wiki-link-open (link)
+  "Open LINK in external wiki program."
+  (cond ((string-match "\\(.*\\):(\\(.*\\)):\\(.*\\)"  link)
+         (let* ((type (match-string 1 link))
+                (library (match-string 2 link))
+                (query (match-string 3 link))
+                (url (concat kiwix-server-url library "/A/" (capitalize query) ".html")))
+           (browse-url url)))
+        ((string-match "\\(.*\\):\\(.*\\)"  link)
+         (let* ((type (match-string 1 link))
+                (query (match-string 2 link))
+                (url (concat kiwix-server-url kiwix-default-library "/A/" (capitalize query) ".html")))
+           (browse-url url)))))
 
-    (setq org-link-abbrev-alist
-          (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
-  )
+(defun org-wiki-link-export (link description format)
+  "Export the wiki LINK with DESCRIPTION for FORMAT from Org files."
+  (let* ((type (when (string-match "\\(.+\\):(\\(.+\\)?):\\(.*\\)" link)
+                 (match-string 1 link)))
+         (library (when (string-match "\\(.+\\):(\\(.+\\)?):\\(.*\\)" link)
+                    (match-string 2 link)))
+         (query (or description
+                    (when (string-match "\\(.+\\):(\\(.+\\)?):\\(.*\\)" link)
+                      (match-string 3 link))))
+         ;; "http://en.wikipedia.org/w/index.php?search=%s"
+         ;;         --
+         ;;          ^- library: en, zh
+         (path (concat "http://" library ".wikipedia.org/w/index.php?search=" query))
+         (desc query))
+    (when (stringp path)
+      (cond
+       ((eq format 'html) (format "<a href=\"%s\">%s</a>" path desc))
+       ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
+       (t path)))))
+
+(defun org-wiki-store-link ()
+  "Store a link to a wiki link."
+  (let* ((query (read-string "Wiki Query: "))
+         ;; TODO: test does this interactively select library abbrev works?
+         (library (kiwix-select-library-abbrev))
+         (link (concat "wiki:" "(" library "):" query)))
+    (org-store-link-props
+     :type "wiki"
+     :link link
+     :description query)))
+
+(if kiwix-support-org-mode-link
+    (progn
+      (org-add-link-type "wiki" 'org-wiki-link-open 'org-wiki-link-export)
+      (add-hook 'org-store-link-functions 'org-wiki-store-link)
+
+      ;; [[Wikipedia_Local:]]
+      (if (and
+           (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
+           (assoc "Wikipedia_Local" org-link-abbrev-alist))
+
+          (setq org-link-abbrev-alist
+                (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
+        )
+      ))
 
 
 (provide 'kiwix)
