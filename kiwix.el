@@ -156,13 +156,15 @@ for query string and library interactively."
                  (match-string 1 link)))
          (library (when (string-match "\\(.+\\):(\\(.+\\)?):\\(.*\\)" link)
                     (match-string 2 link)))
-         (query (or description
-                    (when (string-match "\\(.+\\):(\\(.+\\)?):\\(.*\\)" link)
-                      (match-string 3 link))))
-         ;; "http://en.wikipedia.org/w/index.php?search=%s"
+         ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
+         (query (url-encode-url
+                 (or description
+                     (when (string-match "\\(.+\\):(\\(.+\\)?):\\(.*\\)" link)
+                       (match-string 3 link)))))
+         ;; "http://en.wikipedia.org/wiki/Linux"
          ;;         --
          ;;          ^- library: en, zh
-         (path (concat "http://" library ".wikipedia.org/w/index.php?search=" query))
+         (path (concat "http://" library ".wikipedia.org/wiki/" query))
          (desc query))
     (when (stringp path)
       (cond
