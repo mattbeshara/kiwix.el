@@ -22,25 +22,6 @@
 ;; [M-x kiwix-launch-server] to launch Kiwix server.
 ;; [M-x kiwix-at-point] to search the word under point or the region selected string.
 
-
-;; ;;; Support Org-mode
-;; ;; [[wiki:]]
-;; ;; for open wiki search query with local application database.
-;; (defalias 'org-wiki-link-open 'kiwix-query)
-
-;; (if kiwix-support-org-mode-link-type
-;;     (org-add-link-type "wiki" 'org-wiki-link-open))
-
-;; ;; [[Wikipedia_Local:]]
-;; (if (and
-;;      kiwix-support-org-mode-link-abbrev
-;;      (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
-;;      (assoc "Wikipedia_Local" org-link-abbrev-alist))
-
-;;     (setq org-link-abbrev-alist
-;;           (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
-;;   )
-
 ;;; Code:
 
 
@@ -132,6 +113,26 @@ for query string and library interactively."
                                                  (replace-regexp-in-string "\.zim" "" var))
                                              kiwix-libraries)))))
     (kiwix-query query-string library)))
+
+
+
+;;; Support Org-mode
+;; [[wiki:]]
+;; for open wiki search query with local application database.
+(defalias 'org-wiki-link-open 'kiwix-query)
+
+(if kiwix-support-org-mode-link-type
+    (org-add-link-type "wiki" 'org-wiki-link-open))
+
+;; [[Wikipedia_Local:]]
+(if (and
+     kiwix-support-org-mode-link-abbrev
+     (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
+     (assoc "Wikipedia_Local" org-link-abbrev-alist))
+
+    (setq org-link-abbrev-alist
+          (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
+  )
 
 
 (provide 'kiwix)
