@@ -189,13 +189,13 @@ for query string and library interactively."
       (add-hook 'org-store-link-functions 'org-wiki-store-link)
 
       ;; [[Wikipedia_Local:]]
-      (if (and
-           (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
-           (assoc "Wikipedia_Local" org-link-abbrev-alist))
-
-          (setq org-link-abbrev-alist
-                (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
-        )
+      ;; (if (and
+      ;;      (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
+      ;;      (assoc "Wikipedia_Local" org-link-abbrev-alist))
+      ;;
+      ;;     (setq org-link-abbrev-alist
+      ;;           (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
+      ;;   )
       ))
 
 
