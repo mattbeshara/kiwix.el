@@ -13,6 +13,10 @@
 
 ;;; This currently only works for Linux, not tested for Mac OS X and Windows.
 
+;;; Kiwix installation
+;;
+;; http://www.kiwix.org
+
 ;;; Usage:
 ;;
 ;; [M-x kiwix-launch-server] to launch Kiwix server.
