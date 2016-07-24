@@ -39,7 +39,7 @@
   :type 'string
   :group 'kiwix)
 
-(defcustom kiwix-default-data-path (shell-quote-argument (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
+(defcustom kiwix-default-data-path (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name)
   "Specify the default Kiwix data path."
   :type 'string
   :group 'kiwix)
@@ -79,7 +79,7 @@
         (library-path (concat kiwix-default-data-path "/data/library/library.xml"))
         )
     (async-shell-command
-     (concat kiwix-server-command library port daemon library-path))))
+     (concat kiwix-server-command library port daemon (shell-quote-argument library-path)))))
 
 
 (defun kiwix-query (query &optional library)
