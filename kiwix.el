@@ -174,19 +174,23 @@ for query string and library interactively."
 
 (defun org-wiki-store-link ()
   "Store a link to a wiki link."
-  (let* ((query (read-string "Wiki Query: "))
-         ;; TODO: test does this interactively select library abbrev works?
-         (library (kiwix-select-library-abbrev))
-         (link (concat "wiki:" "(" library "):" query)))
-    (org-store-link-props
-     :type "wiki"
-     :link link
-     :description query)))
+  ;; TODO: test does this interactively select library abbrev works?
+  ;; [C-c o C-l l] `org-store-link'
+  ;; remove those interactive functions. use normal function instead.
+  (when (eq major-mode 'wiki-mode)
+    (let* ((query (read-string "Wiki Query: "))
+           (library (kiwix-select-library-abbrev))
+           (link (concat "wiki:" "(" library "):" query)))
+      (org-store-link-props
+       :type "wiki"
+       :link link
+       :description query))))
 
 (if kiwix-support-org-mode-link
     (progn
       (org-add-link-type "wiki" 'org-wiki-link-open 'org-wiki-link-export)
-      (add-hook 'org-store-link-functions 'org-wiki-store-link)
+      ;; TODO: after fix interactive store link issue. enable this adding.
+      ;; (add-hook 'org-store-link-functions 'org-wiki-store-link t)
 
       ;; [[Wikipedia_Local:]]
       ;; (if (and
