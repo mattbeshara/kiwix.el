@@ -140,7 +140,10 @@ for query string and library interactively."
   "Open LINK in external wiki program."
   (cond ((string-match "\\(.*\\):(\\(.*\\)):\\(.*\\)"  link)
          (let* ((type (match-string 1 link))
-                (library (match-string 2 link))
+                ;; convert between libraries full name and abbrev.
+                (library (cdr (assoc
+                               (match-string 2 link)
+                               kiwix-librarie-abbrev-list)))
                 (query (match-string 3 link))
                 (url (concat kiwix-server-url library "/A/" (url-encode-url (capitalize query)) ".html")))
            (browse-url url)))
