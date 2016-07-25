@@ -106,7 +106,7 @@
   (let* ((kiwix-library (if library
                             library
                           kiwix-default-library))
-         (url (concat kiwix-server-url kiwix-library "/A/" (capitalize query) ".html")))
+         (url (concat kiwix-server-url kiwix-library "/A/" (url-encode-url (capitalize query)) ".html")))
     (browse-url url)))
 
 ;;;###autoload
@@ -142,12 +142,12 @@ for query string and library interactively."
          (let* ((type (match-string 1 link))
                 (library (match-string 2 link))
                 (query (match-string 3 link))
-                (url (concat kiwix-server-url library "/A/" (capitalize query) ".html")))
+                (url (concat kiwix-server-url library "/A/" (url-encode-url (capitalize query)) ".html")))
            (browse-url url)))
         ((string-match "\\(.*\\):\\(.*\\)"  link)
          (let* ((type (match-string 1 link))
                 (query (match-string 2 link))
-                (url (concat kiwix-server-url kiwix-default-library "/A/" (capitalize query) ".html")))
+                (url (concat kiwix-server-url kiwix-default-library "/A/" (url-encode-url (capitalize query)) ".html")))
            (browse-url url)))))
 
 (defun org-wiki-link-export (link description format)
