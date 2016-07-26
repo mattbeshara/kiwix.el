@@ -73,18 +73,24 @@
                                (replace-regexp-in-string "\.zim" "" var))
                            kiwix-libraries)))
 
-(defvar kiwix-librarie-abbrev-list
-  ;; TODO:
-  '(("en" . (mapcar #'(lambda (var)
-                        (string-match-p "en" var))
-                    kiwix-libraries))
-    ("zh" . ())
+(defvar kiwix-librarie-abbrev-alist
+  '(("default" . "wikipedia_en_all_2016-02")
+    ;; TODO:
+    ;; (mapcar #'(lambda (var)
+    ;;             (string-match-p "en" var))
+    ;;         kiwix-libraries)
+    ("en" . "wikipedia_en_all_2016-02")
+    ("zh" . "wikipedia_zh_all_2015-11")
     ))
 
 (defun kiwix-select-library-abbrev ()
   "Select Wikipedia library name abbrev."
   (completing-read "Wikipedia library abbrev: "
-                   (map-keys kiwix-librarie-abbrev-list)))
+                   (map-keys kiwix-librarie-abbrev-alist)))
+
+(defun kiwix-get-library-fullname (abbr)
+  "Get Kiwix library full name which is associated with `ABBR'."
+  (cdr (assoc abbr kiwix-librarie-abbrev-alist)))
 
 ;; launch Kiwix server
 ;;;###autoload
@@ -106,7 +112,7 @@
   (let* ((kiwix-library (if library
                             library
                           kiwix-default-library))
-         (url (concat kiwix-server-url kiwix-library "/A/" (capitalize query) ".html")))
+         (url (concat kiwix-server-url kiwix-library "/A/" (url-encode-url (capitalize query)) ".html")))
     (browse-url url)))
 
 ;;;###autoload
@@ -129,48 +135,57 @@ for query string and library interactively."
 
 
 ;;; Support Org-mode
-;; [[wiki:(library):query]]
-;; elisp regexp: `\\(.*\\):(.*):.*'
+;;
+;; - [[wiki:(library):query]]
+;; - [[wiki:query]]
+;;
+;; links:
+;; - wiki:(zh):%E7%A6%85%E5%AE%97
+;; - wiki:(en):linux
+;; - wiki:linux
+;;
+;; - parameter `link' will be (en):linux" or linux".
+;;
+;; elisp regexp: "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)"
+;; - non capturing group (\(?:...\)) for optional library
+;; - group 1: library (en or zh)
+;; - group 2: link? (match everything but ], space, tab, carriage return, linefeed by using [^] \n\t\r]*)
 ;; for open wiki search query with local application database.
-
-;; TODO: deprecated
-;; (defalias 'org-wiki-link-open 'kiwix-query)
 
 (defun org-wiki-link-open (link)
   "Open LINK in external wiki program."
-  (cond ((string-match "\\(.*\\):(\\(.*\\)):\\(.*\\)"  link)
-         (let* ((type (match-string 1 link))
-                (library (match-string 2 link))
-                (query (match-string 3 link))
-                (url (concat kiwix-server-url library "/A/" (capitalize query) ".html")))
-           (browse-url url)))
-        ((string-match "\\(.*\\):\\(.*\\)"  link)
-         (let* ((type (match-string 1 link))
-                (query (match-string 2 link))
-                (url (concat kiwix-server-url kiwix-default-library "/A/" (capitalize query) ".html")))
-           (browse-url url)))))
+  (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)"  link) ; (library):query
+    (let* (
+           ;; convert between libraries full name and abbrev.
+           (library (kiwix-get-library-fullname (or (match-string 1 link)
+                                                    "default")))
+           (query (match-string 2 link))
+           (url (concat
+                 kiwix-server-url
+                 library "/A/"
+                 ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
+                 (url-encode-url (capitalize query))
+                 ".html")))
+      ;; (prin1 (format "library: %s, query: %s, url: %s" library query url))
+      (browse-url url))
+    ))
 
 (defun org-wiki-link-export (link description format)
   "Export the wiki LINK with DESCRIPTION for FORMAT from Org files."
-  (let* ((type (when (string-match "\\(.+\\):(\\(.+\\)?):\\(.*\\)" link)
-                 (match-string 1 link)))
-         (library (when (string-match "\\(.+\\):(\\(.+\\)?):\\(.*\\)" link)
-                    (match-string 2 link)))
-         ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
-         (query (url-encode-url
-                 (or description
-                     (when (string-match "\\(.+\\):(\\(.+\\)?):\\(.*\\)" link)
-                       (match-string 3 link)))))
-         ;; "http://en.wikipedia.org/wiki/Linux"
-         ;;         --
-         ;;          ^- library: en, zh
-         (path (concat "http://" library ".wikipedia.org/wiki/" query))
-         (desc query))
-    (when (stringp path)
-      (cond
-       ((eq format 'html) (format "<a href=\"%s\">%s</a>" path desc))
-       ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
-       (t path)))))
+  (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)" link)
+    (let* ((library (or (match-string 1 link)
+                        (kiwix-get-library-fullname "default")))
+           (query (url-encode-url (or (match-string 2 link) description)))
+           ;; "http://en.wikipedia.org/wiki/Linux"
+           ;;         --
+           ;;          ^- library: en, zh
+           (path (concat "http://" library ".wikipedia.org/wiki/" query))
+           (desc (or (match-string 2 link) description)))
+      (when (stringp path)
+        (cond
+         ((eq format 'html) (format "<a href=\"%s\">%s</a>" path desc))
+         ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
+         (t path))))))
 
 (defun org-wiki-store-link ()
   "Store a link to a wiki link."
