@@ -7,7 +7,7 @@
 ;; URL: https://github.com/stardiviner/kiwix.el
 ;; Created: 23th July 2016
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "24.3") (cl-lib "2.0"))
+;; Package-Requires: ((emacs "24.3") (cl-lib "0.5"))
 
 ;;; Commentary:
 
