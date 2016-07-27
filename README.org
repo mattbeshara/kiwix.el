@@ -48,7 +48,7 @@ Here is a simple script, you can put it in Linux "*auto-start*".
    http://127.0.0.1:8000/wikinews_en_all_2015-11/A/Big_Linux_Beta_3_released.html
 
    #+BEGIN_SRC emacs-lisp
-   (browse-url (concat "http://127.0.0.1:8000/" "LIBRARY" "A" "RESULT"))
+   (browse-url (concat "http://127.0.0.1:8000/" "LIBRARY" "/A/" "RESULT"))
    #+END_SRC
 
 
@@ -59,3 +59,22 @@ with RESTful API.
 
 - I don't know what Emacs library to use.
 - Or you can use other language to do this, like Ruby or Python etc.
+
+
+* Usage
+
+** Use in Emacs
+
+=[M-x kiwix-at-point]=
+
+** Org-mode integration
+
+=[C-c C-l]= to insert link.
+
+The link format is like this:
+
+#+BEGIN_EXAMPLE
+[[wiki:(library):search][description]]
+#+END_EXAMPLE
+
+The =(library)= can be =wikipedia_en=, =wikipedia_zh=, =wiktionary_en= etc.
