@@ -103,6 +103,15 @@
   (kiwix-construct-libraries-abbrev-alist kiwix-libraries)
   "Alist of Kiwix libraries with name and full name.")
 
+(defun kiwix-select-library-name ()
+  "Select Wikipedia library name abbrev."
+  (completing-read "Wikipedia library abbrev: "
+                   (map-keys kiwix-libraries-abbrev-alist)))
+
+(defun kiwix-get-library-fullname (abbr)
+  "Get Kiwix library full name which is associated with `ABBR'."
+  (cdr (assoc abbr kiwix-libraries-abbrev-alist)))
+
 (defcustom kiwix-default-library "wikipedia_en"
   "The default kiwix library when library fragment in link not specified.")
 
@@ -121,15 +130,6 @@
 ;; (kiwix-get-library-fullname "default")
 ;; (kiwix-get-library-fullname "en")
 ;; (kiwix-get-library-fullname "zh")
-
-(defun kiwix-select-library-name ()
-  "Select Wikipedia library name abbrev."
-  (completing-read "Wikipedia library abbrev: "
-                   (map-keys kiwix-libraries-abbrev-alist)))
-
-(defun kiwix-get-library-fullname (abbr)
-  "Get Kiwix library full name which is associated with `ABBR'."
-  (cdr (assoc abbr kiwix-libraries-abbrev-alist)))
 
 (defcustom kiwix-search-interactively t
   "`kiwix-at-point' search interactively."
