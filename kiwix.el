@@ -107,14 +107,20 @@
   "The default kiwix library when library fragment in link not specified.")
 
 ;; add default key-value pair to libraries alist.
-(defvar kiwix-default-library-cons
-  (cons "default" (kiwix-get-library-fullname kiwix-default-library)))
+(dolist
+    (cons (list
+           (cons "default" (kiwix-get-library-fullname kiwix-default-library))
+           (cons "en" (kiwix-get-library-fullname kiwix-default-library))
+           (cons "zh" (kiwix-get-library-fullname "wikipedia_zh"))))
+  
+  (push cons kiwix-libraries-abbrev-alist)
+  )
 
-;; add `kiwix-default-library-cons' to alist.
-(push kiwix-default-library-cons kiwix-libraries-abbrev-alist)
 ;; test
 ;; (kiwix-get-library-fullname "wikipedia_en")
 ;; (kiwix-get-library-fullname "default")
+;; (kiwix-get-library-fullname "en")
+;; (kiwix-get-library-fullname "zh")
 
 (defun kiwix-select-library-name ()
   "Select Wikipedia library name abbrev."

@@ -77,4 +77,4 @@ The link format is like this:
 [[wiki:(library):search][description]]
 #+END_EXAMPLE
 
-The =(library)= can be =wikipedia_en=, =wikipedia_zh=, =wiktionary_en= etc.
+The =(library)= can be =wikipedia_en=, =wikipedia_zh=, =wiktionary_en=, or =en=, =zh= etc.
