@@ -35,17 +35,32 @@
   :type 'string
   :group 'kiwix)
 
-(defcustom kiwix-server-command "/usr/lib/kiwix/bin/kiwix-serve "
+(defcustom kiwix-server-command
+  (cond
+   ((string-equal system-type "gnu/linux")
+    "/usr/lib/kiwix/bin/kiwix-serve ")
+   ((string-equal system-type "darwin")
+    (warn "You need to specify Mac OS X Kiwix path. And send a PR to my repo."))
+   ((string-equal system-type "windows-nt")
+    (warn "You need to specify Windows Kiwix path. And send a PR to my repo.")))
   "Specify kiwix server command."
   :type 'string
   :group 'kiwix)
 
-(defcustom kiwix-default-data-profile-name "8ip89lik.default"
+(defcustom kiwix-default-data-profile-name
+  (car (directory-files
+        (concat
+         (getenv "HOME") "/.www.kiwix.org/kiwix")
+        nil
+        ".*\\.default"
+        ))
   "Specify the default Kiwix data profile path."
   :type 'string
   :group 'kiwix)
 
-(defcustom kiwix-default-data-path (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name)
+(defcustom kiwix-default-data-path
+  (concat
+   (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name)
   "Specify the default Kiwix data path."
   :type 'string
   :group 'kiwix)
