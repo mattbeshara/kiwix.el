@@ -131,6 +131,11 @@
   "Get Kiwix library full name which is associated with `ABBR'."
   (cdr (assoc abbr kiwix-libraries-abbrev-alist)))
 
+(defcustom kiwix-search-interactively t
+  "`kiwix-at-point' search interactively."
+  :type 'boolean
+  :group 'kiwix)
+
 ;; launch Kiwix server
 ;;;###autoload
 (defun kiwix-launch-server ()
@@ -161,7 +166,8 @@
 Or When prefix argument `INTERACTIVELY' specified, then prompt
 for query string and library interactively."
   (interactive "P")
-  (let* ((library (if interactively
+  (let* ((library (if (or kiwix-search-interactively
+                          interactively)
                       (kiwix-get-library-fullname (kiwix-select-library-name))
                     (kiwix-get-library-fullname "default")))
          (query (if interactively
