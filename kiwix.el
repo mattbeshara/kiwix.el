@@ -83,16 +83,17 @@
   "A list of Kiwix libraries.")
 
 ;; - examples:
-;; - "wikipedia_en" - "wikipedia_en_all_2016-02"
-;; - "wikipedia_zh" - "wikipedia_zh_all_2015-17"
-;; - "wiktionary_en" - "wiktionary_en_all_2015-17"
-;; - "wiktionary_zh" - "wiktionary_zh_all_2015-17"
+;; - "wikipedia_en_all" - "wikipedia_en_all_2016-02"
+;; - "wikipedia_zh_all" - "wikipedia_zh_all_2015-17"
+;; - "wiktionary_en_all" - "wiktionary_en_all_2015-17"
+;; - "wiktionary_zh_all" - "wiktionary_zh_all_2015-17"
+;; - "wikipedia_en_medicine" - "wikipedia_en_medicine_2015-17"
 
 (defun kiwix-construct-libraries-abbrev-alist (alist)
   "Construct libraries abbrev alist from `ALIST'."
   (let* ((libraries-name
           (mapcar #'(lambda (library)
-                      (string-match "\\(.*\\)_all_.*"  library)
+                      (string-match "\\(.*\\)_[0-9]\\{4\\}-[0-9]\\{2\\}"  library)
                       (let* ((library-name (match-string 1 library)))
                         library-name))
                   alist))
