@@ -113,7 +113,7 @@
   "Get Kiwix library full name which is associated with `ABBR'."
   (cdr (assoc abbr kiwix-libraries-abbrev-alist)))
 
-(defcustom kiwix-default-library "wikipedia_en"
+(defcustom kiwix-default-library "wikipedia_en_all"
   "The default kiwix library when library fragment in link not specified.")
 
 ;; add default key-value pair to libraries alist.
@@ -121,7 +121,7 @@
     (cons (list
            (cons "default" (kiwix-get-library-fullname kiwix-default-library))
            (cons "en" (kiwix-get-library-fullname kiwix-default-library))
-           (cons "zh" (kiwix-get-library-fullname "wikipedia_zh"))))
+           (cons "zh" (kiwix-get-library-fullname "wikipedia_zh_all"))))
   
   (push cons kiwix-libraries-abbrev-alist)
   )
