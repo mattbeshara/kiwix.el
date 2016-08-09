@@ -183,7 +183,12 @@ for query string and library interactively."
                          (region-beginning) (region-end))
                       (thing-at-point 'symbol))))))
     (message (format "library: %s, query: %s" library query))
-    (kiwix-query query library)))
+    (if (or (null library)
+            (string-empty-p library)
+            (null query)
+            (string-empty-p query))
+        (error "Your query is invalid")
+      (kiwix-query query library))))
 
 
 
