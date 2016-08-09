@@ -17,6 +17,13 @@
 ;;
 ;; http://www.kiwix.org
 
+;;; Config:
+;;
+;; (define-key my-prog-help-document-map (kbd "w") 'kiwix-at-point)
+;; (define-key my-prog-help-document-map (kbd "W") 'kiwix-at-point-interactive)
+;; (define-key my-prog-help-document-map (kbd "C-w") 'kiwix-launch-server)
+
+
 ;;; Usage:
 ;;
 ;; [M-x kiwix-launch-server] to launch Kiwix server.
