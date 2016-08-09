@@ -17,6 +17,13 @@
 ;;
 ;; http://www.kiwix.org
 
+;;; Config:
+;;
+;; (define-key my-prog-help-document-map (kbd "w") 'kiwix-at-point)
+;; (define-key my-prog-help-document-map (kbd "W") 'kiwix-at-point-interactive)
+;; (define-key my-prog-help-document-map (kbd "C-w") 'kiwix-launch-server)
+
+
 ;;; Usage:
 ;;
 ;; [M-x kiwix-launch-server] to launch Kiwix server.
@@ -183,9 +190,19 @@ for query string and library interactively."
                          (region-beginning) (region-end))
                       (thing-at-point 'symbol))))))
     (message (format "library: %s, query: %s" library query))
-    (kiwix-query query library)))
+    (if (or (null library)
+            (string-empty-p library)
+            (null query)
+            (string-empty-p query))
+        (error "Your query is invalid")
+      (kiwix-query query library))))
 
 
+;;;###autoload
+(defun kiwix-at-point-interactive ()
+  (interactive)
+  (let ((current-prefix-arg t))
+    (call-interactively 'kiwix-at-point)))
 
 ;;; Support Org-mode
 ;;
