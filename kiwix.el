@@ -191,6 +191,11 @@ for query string and library interactively."
       (kiwix-query query library))))
 
 
+;;;###autoload
+(defun kiwix-at-point-interactive ()
+  (interactive)
+  (let ((current-prefix-arg t))
+    (call-interactively 'kiwix-at-point)))
 
 ;;; Support Org-mode
 ;;
