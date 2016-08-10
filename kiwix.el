@@ -164,7 +164,12 @@
   (let* ((kiwix-library (if library
                             library
                           (kiwix-get-library-fullname "default")))
-         (url (concat kiwix-server-url kiwix-library "/A/" (url-encode-url (capitalize query)) ".html")))
+         (url (concat kiwix-server-url kiwix-library "/A/"
+                      ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
+                      (url-encode-url
+                       ;; convert space to underline: "Beta distribution" "Beta_distribution"
+                       (replace-regexp-in-string " " "_" (capitalize query) nil nil))
+                      ".html")))
     (browse-url url)))
 
 ;;;###autoload
@@ -234,11 +239,13 @@ for query string and library interactively."
                  kiwix-server-url
                  library "/A/"
                  ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
-                 (url-encode-url (capitalize query))
+                 (url-encode-url
+                  ;; convert space to underline: "Beta distribution" "Beta_distribution"
+                  (replace-regexp-in-string " " "_"
+                                            (capitalize query) nil nil))
                  ".html")))
       ;; (prin1 (format "library: %s, query: %s, url: %s" library query url))
-      (browse-url url))
-    ))
+      (browse-url url))))
 
 (defun org-wiki-link-export (link description format)
   "Export the wiki LINK with DESCRIPTION for FORMAT from Org files."
