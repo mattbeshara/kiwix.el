@@ -280,9 +280,11 @@ for query string and library interactively."
 
 (if kiwix-support-org-mode-link
     (progn
-      (org-add-link-type "wiki" 'org-wiki-link-open 'org-wiki-link-export)
-      ;; TODO: after fix interactive store link issue. enable this adding.
-      ;; (add-hook 'org-store-link-functions 'org-wiki-store-link t)
+      (org-link-set-parameters "wiki"
+                               :follow #'org-wiki-link-open
+                               :store #'org-wiki-store-link
+                               :export #'org-wiki-link-export)
+      (add-hook 'org-store-link-functions 'org-wiki-store-link t)
 
       ;; [[Wikipedia_Local:]]
       ;; (if (and
