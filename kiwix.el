@@ -284,11 +284,23 @@ for query string and library interactively."
        :link link
        :description query))))
 
+;;;###autoload
 (if kiwix-support-org-mode-link
     (progn
-      (org-add-link-type "wiki" 'org-wiki-link-open 'org-wiki-link-export)
-      ;; TODO: after fix interactive store link issue. enable this adding.
-      ;; (add-hook 'org-store-link-functions 'org-wiki-store-link t)
+      (org-link-set-parameters "wiki"
+                               :follow #'org-wiki-link-open
+                               :store #'org-wiki-store-link
+                               :export #'org-wiki-link-export)
+      (add-hook 'org-store-link-functions 'org-wiki-store-link t)
+
+      ;; [[Wikipedia_Local:]]
+      ;; (if (and
+      ;;      (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
+      ;;      (assoc "Wikipedia_Local" org-link-abbrev-alist))
+      ;;
+      ;;     (setq org-link-abbrev-alist
+      ;;           (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
+      ;;   )
       ))
 
 
