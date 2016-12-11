@@ -278,6 +278,7 @@ for query string and library interactively."
        :link link
        :description query))))
 
+;;;###autoload
 (if kiwix-support-org-mode-link
     (progn
       (org-link-set-parameters "wiki"
