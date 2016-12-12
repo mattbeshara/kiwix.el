@@ -229,11 +229,17 @@ for query string and library interactively."
 
 (defun org-wiki-link-open (link)
   "Open LINK in external wiki program."
-  (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)"  link) ; (library):query
+  ;; The regexp: (library):query
+  ;; - query : should not exclude space
+  (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^]\n\t\r]*\\)"  link) ; (library):query
     (let* (
-           ;; convert between libraries full name and abbrev.
-           (library (kiwix-get-library-fullname (or (match-string 1 link)
-                                                    "default")))
+           (library (if (string-match-p "[a-zA-Z\ ]+" (match-string 2 link)) ; validate query is English
+                        ;; convert between libraries full name and abbrev.
+                        (kiwix-get-library-fullname (or (match-string 1 link)
+                                                        "default"))
+                      ;; validate query is non-English
+                      (kiwix-get-library-fullname "zh")
+                      ))
            (query (match-string 2 link))
            (url (concat
                  kiwix-server-url
