@@ -273,11 +273,10 @@ for query string and library interactively."
 
 (defun org-wiki-store-link ()
   "Store a link to a wiki link."
-  ;; TODO: test does this interactively select library abbrev works?
   ;; [C-c o C-l l] `org-store-link'
   ;; remove those interactive functions. use normal function instead.
   (when (eq major-mode 'wiki-mode)
-    (let* ((query (read-string "Wiki Query: "))
+    (let* ((query (read-string "Wikipedia Query with Kiwix: "))
            (library (kiwix-select-library-name))
            (link (concat "wiki:" "(" library "):" query)))
       (org-store-link-props
