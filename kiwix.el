@@ -159,18 +159,29 @@
     (async-shell-command
      (concat kiwix-server-command library port daemon (shell-quote-argument library-path)))))
 
+(defun kiwix-capitalize-first (string)
+  "Only capitalize the first word of STRING."
+  (concat
+   (string (upcase (aref string 0)))
+   (substring string 1))
+  )
 
 (defun kiwix-query (query &optional library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
   (let* ((kiwix-library (if library
                             library
                           (kiwix-get-library-fullname "default")))
-         (url (concat kiwix-server-url kiwix-library "/A/"
-                      ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
-                      (url-encode-url
-                       ;; convert space to underline: "Beta distribution" "Beta_distribution"
-                       (replace-regexp-in-string " " "_" (capitalize query) nil nil))
-                      ".html")))
+         (url (concat
+               kiwix-server-url kiwix-library "/A/"
+               ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
+               (url-encode-url
+                ;; convert space to underline: "Beta distribution" "Beta_distribution"
+                (replace-regexp-in-string
+                 " " "_"
+                 ;; only capitalize the first word. like: "meta-circular interpreter" -> "Meta-circular interpreter"
+                 (kiwix-capitalize-first query)
+                 nil nil))
+               ".html")))
     (browse-url url)))
 
 ;;;###autoload
@@ -248,8 +259,11 @@ for query string and library interactively."
                  ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
                  (url-encode-url
                   ;; convert space to underline: "Beta distribution" "Beta_distribution"
-                  (replace-regexp-in-string " " "_"
-                                            (capitalize query) nil nil))
+                  (replace-regexp-in-string
+                   " " "_"
+                   ;; only capitalize the first word. like: "meta-circular interpreter" -> "Meta-circular interpreter"
+                   (kiwix-capitalize-first query)
+                   nil nil))
                  ".html")))
       ;; (prin1 (format "library: %s, query: %s, url: %s" library query url))
       (browse-url url))))
@@ -273,11 +287,10 @@ for query string and library interactively."
 
 (defun org-wiki-store-link ()
   "Store a link to a wiki link."
-  ;; TODO: test does this interactively select library abbrev works?
   ;; [C-c o C-l l] `org-store-link'
   ;; remove those interactive functions. use normal function instead.
   (when (eq major-mode 'wiki-mode)
-    (let* ((query (read-string "Wiki Query: "))
+    (let* ((query (read-string "Wikipedia Query with Kiwix: "))
            (library (kiwix-select-library-name))
            (link (concat "wiki:" "(" library "):" query)))
       (org-store-link-props
