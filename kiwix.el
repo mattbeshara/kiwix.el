@@ -77,6 +77,7 @@
   :type 'string
   :group 'kiwix)
 
+;;;###autoload
 (defcustom kiwix-support-org-mode-link t
   "Add support for Org-mode Kiwix link."
   :type 'boolean
