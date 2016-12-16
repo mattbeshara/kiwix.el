@@ -33,6 +33,7 @@
 
 
 (require 'cl-lib)
+(require 'org) ; load for `org-link-set-parameters'
 
 (defgroup kiwix nil
   "Kiwix customization options.")
