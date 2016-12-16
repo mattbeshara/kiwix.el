@@ -246,19 +246,23 @@ for query string and library interactively."
 ;; - group 2: link? (match everything but ], space, tab, carriage return, linefeed by using [^] \n\t\r]*)
 ;; for open wiki search query with local application database.
 
+(defun kiwix-org-get-library ()
+  "Get library from Org-mode link."
+  (if (string-match-p "[a-zA-Z\ ]+" (match-string 2 link)) ; validate query is English
+      ;; convert between libraries full name and abbrev.
+      (kiwix-get-library-fullname (or (match-string 1 link)
+                                      "default"))
+    ;; validate query is non-English
+    (kiwix-get-library-fullname kiwix-your-language-library)
+    )
+  )
+
 (defun org-wiki-link-open (link)
   "Open LINK in external wiki program."
   ;; The regexp: (library):query
   ;; - query : should not exclude space
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^]\n\t\r]*\\)"  link) ; (library):query
-    (let* (
-           (library (if (string-match-p "[a-zA-Z\ ]+" (match-string 2 link)) ; validate query is English
-                        ;; convert between libraries full name and abbrev.
-                        (kiwix-get-library-fullname (or (match-string 1 link)
-                                                        "default"))
-                      ;; validate query is non-English
-                      (kiwix-get-library-fullname kiwix-your-language-library)
-                      ))
+    (let* ((library (kiwix-org-get-library))
            (query (match-string 2 link))
            (url (concat
                  kiwix-server-url
@@ -278,8 +282,7 @@ for query string and library interactively."
 (defun org-wiki-link-export (link description format)
   "Export the wiki LINK with DESCRIPTION for FORMAT from Org files."
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)" link)
-    (let* ((library (or (match-string 1 link)
-                        (kiwix-get-library-fullname "default")))
+    (let* ((library (kiwix-org-get-library))
            (query (url-encode-url (or (match-string 2 link) description)))
            ;; "http://en.wikipedia.org/wiki/Linux"
            ;;         --
