@@ -122,7 +122,9 @@
   (cdr (assoc abbr kiwix-libraries-abbrev-alist)))
 
 (defcustom kiwix-default-library "wikipedia_en_all"
-  "The default kiwix library when library fragment in link not specified.")
+  "The default kiwix library when library fragment in link not specified."
+  :type 'string
+  :group 'kiwix)
 
 ;; add default key-value pair to libraries alist.
 (dolist
@@ -133,6 +135,11 @@
   
   (push cons kiwix-libraries-abbrev-alist)
   )
+
+(defcustom kiwix-your-language-library "zh"
+  "Specify the library for your navtive language."
+  :type 'string
+  :group 'kiwix)
 
 ;; test
 ;; (kiwix-get-library-fullname "wikipedia_en")
@@ -250,7 +257,7 @@ for query string and library interactively."
                         (kiwix-get-library-fullname (or (match-string 1 link)
                                                         "default"))
                       ;; validate query is non-English
-                      (kiwix-get-library-fullname "zh")
+                      (kiwix-get-library-fullname kiwix-your-language-library)
                       ))
            (query (match-string 2 link))
            (url (concat
