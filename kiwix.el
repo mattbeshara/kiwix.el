@@ -35,10 +35,11 @@
 (require 'cl-lib)
 ;; load for `org-link-set-parameters'
 (require 'org)
-(autoload 'org-link-set-parameters "org")
+(declare-function 'org-link-set-parameters "org")
 
 (defgroup kiwix nil
-  "Kiwix customization options.")
+  "Kiwix customization options."
+  :group 'kiwix)
 
 (defcustom kiwix-server-url "http://127.0.0.1:8000/"
   "Specify Kiwix server URL."
