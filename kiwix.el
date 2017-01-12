@@ -312,25 +312,26 @@ for query string and library interactively."
        :link link
        :description query))))
 
-(autoload 'org-link-set-parameters "org")
 ;;;###autoload
-(if kiwix-support-org-mode-link
-    (progn
-      (org-link-set-parameters "wiki"
-                               :follow #'org-wiki-link-open
-                               :store #'org-wiki-store-link
-                               :export #'org-wiki-link-export)
-      (add-hook 'org-store-link-functions 'org-wiki-store-link t)
+(with-eval-after-load "org"
+  (if kiwix-support-org-mode-link
+      (progn
+        (org-link-set-parameters "wiki"
+                                 :follow #'org-wiki-link-open
+                                 :store #'org-wiki-store-link
+                                 :export #'org-wiki-link-export)
+        (add-hook 'org-store-link-functions 'org-wiki-store-link t)
 
-      ;; [[Wikipedia_Local:]]
-      ;; (if (and
-      ;;      (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
-      ;;      (assoc "Wikipedia_Local" org-link-abbrev-alist))
-      ;;
-      ;;     (setq org-link-abbrev-alist
-      ;;           (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
-      ;;   )
-      ))
+        ;; [[Wikipedia_Local:]]
+        ;; (if (and
+        ;;      (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
+        ;;      (assoc "Wikipedia_Local" org-link-abbrev-alist))
+        ;;
+        ;;     (setq org-link-abbrev-alist
+        ;;           (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
+        ;;   )
+        )))
+
 
 
 (provide 'kiwix)
