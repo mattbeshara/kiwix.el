@@ -234,13 +234,13 @@ for query string and library interactively."
 
 ;;; Support Org-mode
 ;;
-;; - [[wiki:(library):query]]
-;; - [[wiki:query]]
+;; - [[wikipedia:(library):query]]
+;; - [[wikipedia:query]]
 ;;
 ;; links:
-;; - wiki:(zh):%E7%A6%85%E5%AE%97
-;; - wiki:(en):linux
-;; - wiki:linux
+;; - wikipedia:(zh):%E7%A6%85%E5%AE%97
+;; - wikipedia:(en):linux
+;; - wikipedia:linux
 ;;
 ;; - parameter `link' will be (en):linux" or linux".
 ;;
@@ -261,8 +261,8 @@ for query string and library interactively."
     )
   )
 
-(defun org-wiki-link-open (link)
-  "Open LINK in external wiki program."
+(defun org-wikipedia-link-open (link)
+  "Open LINK in external Wikipedia program."
   ;; The regexp: (library):query
   ;; - query : should not exclude space
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^]\n\t\r]*\\)"  link) ; (library):query
@@ -283,8 +283,8 @@ for query string and library interactively."
       ;; (prin1 (format "library: %s, query: %s, url: %s" library query url))
       (browse-url url))))
 
-(defun org-wiki-link-export (link description format)
-  "Export the wiki LINK with DESCRIPTION for FORMAT from Org files."
+(defun org-wikipedia-link-export (link description format)
+  "Export the Wikipedia LINK with DESCRIPTION for FORMAT from Org files."
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)" link)
     (let* ((library (kiwix-org-get-library))
            (query (url-encode-url (or (match-string 2 link) description)))
@@ -299,16 +299,16 @@ for query string and library interactively."
          ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
          (t path))))))
 
-(defun org-wiki-store-link ()
-  "Store a link to a wiki link."
+(defun org-wikipedia-store-link ()
+  "Store a link to a Wikipedia link."
   ;; [C-c o C-l l] `org-store-link'
   ;; remove those interactive functions. use normal function instead.
   (when (eq major-mode 'wiki-mode)
     (let* ((query (read-string "Wikipedia Query with Kiwix: "))
            (library (kiwix-select-library-name))
-           (link (concat "wiki:" "(" library "):" query)))
+           (link (concat "wikipedia:" "(" library "):" query)))
       (org-store-link-props
-       :type "wiki"
+       :type "wikipedia"
        :link link
        :description query))))
 
@@ -316,11 +316,11 @@ for query string and library interactively."
 (with-eval-after-load "org"
   (if kiwix-support-org-mode-link
       (progn
-        (org-link-set-parameters "wiki"
-                                 :follow #'org-wiki-link-open
-                                 :store #'org-wiki-store-link
-                                 :export #'org-wiki-link-export)
-        (add-hook 'org-store-link-functions 'org-wiki-store-link t)
+        (org-link-set-parameters "wikipedia"
+                                 :follow #'org-wikipedia-link-open
+                                 :store #'org-wikipedia-store-link
+                                 :export #'org-wikipedia-link-export)
+        (add-hook 'org-store-link-functions 'org-wikipedia-store-link t)
 
         ;; [[Wikipedia_Local:]]
         ;; (if (and

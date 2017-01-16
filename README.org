@@ -74,14 +74,15 @@ with RESTful API.
 The link format is like this:
 
 #+BEGIN_EXAMPLE
-[[wiki:(library):search][description]]
+[[wikipedia:(library):search][description]]
 #+END_EXAMPLE
 
 The =(library)= can be =wikipedia_en=, =wikipedia_zh=, =wiktionary_en=, or =en=, =zh= etc.
 
+
 * Test
 
-- [[wiki:Operations%20Research][Operations Research]] :: query contains space.
-- [[wiki:Operations%20research][Operations research]] :: the second word is not capitalized.
-- [[wiki:%E4%B8%AD%E5%9B%BD][中国]] :: non-english query
-- [[wiki:meta-circular%20interpreter][meta-circular interpreter]] :: only capitalize the first word.
+- [[wikipedia:Operations%20Research][Operations Research]] :: query contains space.
+- [[wikipedia:Operations%20research][Operations research]] :: the second word is not capitalized.
+- [[wikipedia:%E4%B8%AD%E5%9B%BD][中国]] :: non-english query
+- [[wikipedia:meta-circular%20interpreter][meta-circular interpreter]] :: only capitalize the first word.
