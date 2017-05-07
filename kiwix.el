@@ -34,7 +34,9 @@
 
 (require 'cl-lib)
 ;; load for `org-link-set-parameters'
+;;;###autoload
 (require 'org)
+;;;###autoload
 (declare-function 'org-link-set-parameters "org")
 
 (defgroup kiwix nil
@@ -261,6 +263,7 @@ for query string and library interactively."
     )
   )
 
+;;;###autoload
 (defun org-wikipedia-link-open (link)
   "Open LINK in external Wikipedia program."
   ;; The regexp: (library):query
@@ -283,6 +286,7 @@ for query string and library interactively."
       ;; (prin1 (format "library: %s, query: %s, url: %s" library query url))
       (browse-url url))))
 
+;;;###autoload
 (defun org-wikipedia-link-export (link description format)
   "Export the Wikipedia LINK with DESCRIPTION for FORMAT from Org files."
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)" link)
@@ -299,6 +303,7 @@ for query string and library interactively."
          ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
          (t path))))))
 
+;;;###autoload
 (defun org-wikipedia-store-link ()
   "Store a link to a Wikipedia link."
   ;; [C-c o C-l l] `org-store-link'
