@@ -252,7 +252,7 @@ for query string and library interactively."
 ;; - group 2: link? (match everything but ], space, tab, carriage return, linefeed by using [^] \n\t\r]*)
 ;; for open wiki search query with local application database.
 
-(defun kiwix-org-get-library ()
+(defun kiwix-org-get-library (link)
   "Get library from Org-mode link."
   (if (string-match-p "[a-zA-Z\ ]+" (match-string 2 link)) ; validate query is English
       ;; convert between libraries full name and abbrev.
@@ -269,7 +269,7 @@ for query string and library interactively."
   ;; The regexp: (library):query
   ;; - query : should not exclude space
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^]\n\t\r]*\\)"  link) ; (library):query
-    (let* ((library (kiwix-org-get-library))
+    (let* ((library (kiwix-org-get-library link))
            (query (match-string 2 link))
            (url (concat
                  kiwix-server-url
@@ -290,7 +290,7 @@ for query string and library interactively."
 (defun org-wikipedia-link-export (link description format)
   "Export the Wikipedia LINK with DESCRIPTION for FORMAT from Org files."
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)" link)
-    (let* ((library (kiwix-org-get-library))
+    (let* ((library (kiwix-org-get-library link))
            (query (url-encode-url (or (match-string 2 link) description)))
            ;; "http://en.wikipedia.org/wiki/Linux"
            ;;         --
