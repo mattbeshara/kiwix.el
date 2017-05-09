@@ -315,7 +315,8 @@ for query string and library interactively."
       (org-store-link-props
        :type "wikipedia"
        :link link
-       :description query))))
+       :description query)
+      link)))
 
 ;;;###autoload
 (with-eval-after-load "org"
