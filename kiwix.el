@@ -230,6 +230,7 @@ for query string and library interactively."
 
 ;;;###autoload
 (defun kiwix-at-point-interactive ()
+  "Interactively input to query with kiwix."
   (interactive)
   (let ((current-prefix-arg t))
     (call-interactively 'kiwix-at-point)))
@@ -253,7 +254,7 @@ for query string and library interactively."
 ;; for open wiki search query with local application database.
 
 (defun kiwix-org-get-library (link)
-  "Get library from Org-mode link."
+  "Get library from Org-mode `LINK'."
   (if (string-match-p "[a-zA-Z\ ]+" (match-string 2 link)) ; validate query is English
       ;; convert between libraries full name and abbrev.
       (kiwix-get-library-fullname (or (match-string 1 link)
