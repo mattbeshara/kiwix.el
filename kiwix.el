@@ -60,20 +60,29 @@
   :type 'string
   :group 'kiwix)
 
+;;;###autoload
+(defun kiwix-dir-detect ()
+  "Detect Kiwix profile directory exist."
+  (let ((kiwix-dir (concat (getenv "HOME") "/.www.kiwix.org/kiwix")))
+    (unless (not (file-accessible-directory-p kiwix-dir))
+      (warn "ERROR: Kiwix profile directory \".www.kiwix.org/kiwix\" is not accessible."))))
+
 (defcustom kiwix-default-data-profile-name
-  (car (directory-files
-        (concat
-         (getenv "HOME") "/.www.kiwix.org/kiwix")
-        nil
-        ".*\\.default"
-        ))
+  (when (kiwix-dir-detect)
+    (car (directory-files
+          (concat
+           (getenv "HOME") "/.www.kiwix.org/kiwix")
+          nil
+          ".*\\.default"
+          )))
   "Specify the default Kiwix data profile path."
   :type 'string
   :group 'kiwix)
 
 (defcustom kiwix-default-data-path
-  (concat
-   (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name)
+  (when (kiwix-dir-detect)
+    (concat
+     (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
   "Specify the default Kiwix data path."
   :type 'string
   :group 'kiwix)
@@ -90,10 +99,11 @@
   :group 'kiwix)
 
 (defvar kiwix-libraries
-  (mapcar #'(lambda (var)
-              (replace-regexp-in-string "\.zim" "" var))
-          (directory-files
-           (concat kiwix-default-data-path "/data/content/") nil ".*\.zim"))
+  (when (kiwix-dir-detect)
+    (mapcar #'(lambda (var)
+                (replace-regexp-in-string "\.zim" "" var))
+            (directory-files
+             (concat kiwix-default-data-path "/data/content/") nil ".*\.zim")))
   "A list of Kiwix libraries.")
 
 ;; - examples:
