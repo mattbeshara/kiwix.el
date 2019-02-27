@@ -19,10 +19,14 @@
 
 ;;; Config:
 ;;
-;; (define-key my-prog-help-document-map (kbd "w") 'kiwix-at-point)
-;; (define-key my-prog-help-document-map (kbd "W") 'kiwix-at-point-interactive)
-;; (define-key my-prog-help-document-map (kbd "C-w") 'kiwix-launch-server)
-
+;; (use-package kiwix
+;;   :ensure t
+;;   :after org
+;;   :bind (:map document-prefix
+;;               ("w" . kiwix-at-point)
+;;               ("W" . kiwix-at-point-interactive)
+;;               ("M-w" . kiwix-launch-server))
+;;   :init (setq kiwix-your-language-library "zh"))
 
 ;;; Usage:
 ;;
@@ -39,14 +43,14 @@
 ;;;###autoload
 (declare-function 'org-link-set-parameters "org")
 
-(defgroup kiwix nil
+(defgroup kiwix-mode nil
   "Kiwix customization options."
-  :group 'kiwix)
+  :group 'kiwix-mode)
 
 (defcustom kiwix-server-url "http://127.0.0.1:8000/"
   "Specify Kiwix server URL."
   :type 'string
-  :group 'kiwix)
+  :group 'kiwix-mode)
 
 (defcustom kiwix-server-command
   (cond
@@ -58,7 +62,7 @@
     (warn "You need to specify Windows Kiwix path. And send a PR to my repo.")))
   "Specify kiwix server command."
   :type 'string
-  :group 'kiwix)
+  :group 'kiwix-mode)
 
 ;;;###autoload
 (defun kiwix-dir-detect ()
@@ -77,7 +81,7 @@
           )))
   "Specify the default Kiwix data profile path."
   :type 'string
-  :group 'kiwix)
+  :group 'kiwix-mode)
 
 (defcustom kiwix-default-data-path
   (when (kiwix-dir-detect)
@@ -85,18 +89,18 @@
      (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
   "Specify the default Kiwix data path."
   :type 'string
-  :group 'kiwix)
+  :group 'kiwix-mode)
 
 (defcustom kiwix-server-port "8000"
   "Specify the default Kiwix server port."
   :type 'string
-  :group 'kiwix)
+  :group 'kiwix-mode)
 
 ;;;###autoload
 (defcustom kiwix-support-org-mode-link t
   "Add support for Org-mode Kiwix link."
   :type 'boolean
-  :group 'kiwix)
+  :group 'kiwix-mode)
 
 (defvar kiwix-libraries
   (when (kiwix-dir-detect)
@@ -140,7 +144,7 @@
 (defcustom kiwix-default-library "wikipedia_en_all"
   "The default kiwix library when library fragment in link not specified."
   :type 'string
-  :group 'kiwix)
+  :group 'kiwix-mode)
 
 ;; add default key-value pair to libraries alist.
 (dolist
@@ -155,7 +159,7 @@
 (defcustom kiwix-your-language-library "zh"
   "Specify the library for your navtive language."
   :type 'string
-  :group 'kiwix)
+  :group 'kiwix-mode)
 
 ;; test
 ;; (kiwix-get-library-fullname "wikipedia_en")
@@ -166,7 +170,12 @@
 (defcustom kiwix-search-interactively t
   "`kiwix-at-point' search interactively."
   :type 'boolean
-  :group 'kiwix)
+  :group 'kiwix-mode)
+
+(defcustom kiwix-mode-prefix nil
+  "Specify kiwix-mode keybinding prefix before loading."
+  :type 'kbd
+  :group 'kiwix-mode)
 
 ;; launch Kiwix server
 ;;;###autoload
@@ -329,26 +338,37 @@ for query string and library interactively."
        :description query)
       link)))
 
+(defvar kiwix-mode-map
+  (let ((map (make-sparse-keymap)))
+    map)
+  "kiwix-mode map.")
+
+(defun kiwix-mode-enable ()
+  "Enable kiwix-mode."
+  (when kiwix-support-org-mode-link
+    (org-link-set-parameters "wikipedia" ; NOTE: use `wikipedia' for future backend changing.
+                             :follow #'org-wikipedia-link-open
+                             :store #'org-wikipedia-store-link
+                             :export #'org-wikipedia-link-export)
+    (add-hook 'org-store-link-functions 'org-wikipedia-store-link t)))
+
+(defun kiwix-mode-disable ()
+  "Disable kiwix-mode."
+  )
+
 ;;;###autoload
-(with-eval-after-load "org"
-  (if kiwix-support-org-mode-link
-      (progn
-        (org-link-set-parameters "wikipedia"
-                                 :follow #'org-wikipedia-link-open
-                                 :store #'org-wikipedia-store-link
-                                 :export #'org-wikipedia-link-export)
-        (add-hook 'org-store-link-functions 'org-wikipedia-store-link t)
+(define-minor-mode kiwix-mode
+  "Kiwix global minor mode for searching Kiwix serve."
+  :require 'kiwix-mode
+  :init-value nil
+  :lighter " Kiwix"
+  :group 'kiwix-mode
+  :keymap kiwix-mode-map
+  (if kiwix-mode (kiwix-mode-enable) (kiwix-mode-disable)))
 
-        ;; [[Wikipedia_Local:]]
-        ;; (if (and
-        ;;      (member '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist)
-        ;;      (assoc "Wikipedia_Local" org-link-abbrev-alist))
-        ;;
-        ;;     (setq org-link-abbrev-alist
-        ;;           (cons '("Wikipedia_Local" . "http://127.0.0.1:8000/wikipedia_zh_all_2015-11/A/%s.html") org-link-abbrev-alist))
-        ;;   )
-        )))
-
+;;;###autoload
+(define-global-minor-mode global-kiwix-mode kiwix-mode
+  kiwix-mode)
 
 
 (provide 'kiwix)
