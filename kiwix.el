@@ -77,8 +77,7 @@
           (concat
            (getenv "HOME") "/.www.kiwix.org/kiwix")
           nil
-          ".*\\.default"
-          )))
+          ".*\\.default")))
   "Specify the default Kiwix data profile path."
   :type 'string
   :group 'kiwix-mode)
@@ -152,9 +151,7 @@
            (cons "default" (kiwix-get-library-fullname kiwix-default-library))
            (cons "en" (kiwix-get-library-fullname kiwix-default-library))
            (cons "zh" (kiwix-get-library-fullname "wikipedia_zh_all"))))
-  
-  (push cons kiwix-libraries-abbrev-alist)
-  )
+  (push cons kiwix-libraries-abbrev-alist))
 
 (defcustom kiwix-your-language-library "zh"
   "Specify the library for your navtive language."
@@ -182,7 +179,6 @@
 (defun kiwix-launch-server ()
   "Launch Kiwix server."
   (interactive)
-  
   (let ((library "--library ")
         (port (concat "--port=" kiwix-server-port " "))
         (daemon "--daemon ")
@@ -195,8 +191,7 @@
   "Only capitalize the first word of STRING."
   (concat
    (string (upcase (aref string 0)))
-   (substring string 1))
-  )
+   (substring string 1)))
 
 (defun kiwix-query (query &optional library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
@@ -279,9 +274,7 @@ for query string and library interactively."
       (kiwix-get-library-fullname (or (match-string 1 link)
                                       "default"))
     ;; validate query is non-English
-    (kiwix-get-library-fullname kiwix-your-language-library)
-    )
-  )
+    (kiwix-get-library-fullname kiwix-your-language-library)))
 
 ;;;###autoload
 (defun org-wikipedia-link-open (link)
