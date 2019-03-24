@@ -146,7 +146,7 @@
 (dolist (cons (list (cons "default" (kiwix-get-library-fullname kiwix-default-library))
                     (cons "en" (kiwix-get-library-fullname kiwix-default-library))
                     (cons "zh" (kiwix-get-library-fullname "wikipedia_zh_all"))))
-  (push cons kiwix-libraries-abbrev-alist))
+  (add-to-list 'kiwix-libraries-abbrev-alist cons))
 
 (defcustom kiwix-your-language-library "zh"
   "Specify the library for your navtive language."
