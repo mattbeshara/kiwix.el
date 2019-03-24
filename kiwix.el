@@ -25,7 +25,7 @@
 ;;   :commands (kiwix-launch-server kiwix-at-point-interactive)
 ;;   :bind (:map document-prefix ("w" . kiwix-at-point-interactive))
 ;;   :init (setq kiwix-server-use-docker t
-;;               kiwix-server-url "http://127.0.0.1:8089/"
+;;               kiwix-server-port 8080
 ;;               kiwix-default-library "wikipedia_zh_all_2015-11.zim"))
 
 ;;; Usage:
@@ -54,9 +54,13 @@
   :safe #'booleanp
   :group 'kiwix-mode)
 
-(defcustom kiwix-server-url (if kiwix-server-use-docker
-                                "http://127.0.0.1:8080/"
-                              "http://127.0.0.1:8000/")
+(defcustom kiwix-server-port 8000
+  "Specify default kiwix-serve server port."
+  :type 'number
+  :safe #'numberp
+  :group 'kiwix-mode)
+
+(defcustom kiwix-server-url (format "http://127.0.0.1:%s/" kiwix-server-port)
   "Specify Kiwix server URL."
   :type 'string
   :group 'kiwix-mode)
@@ -93,11 +97,6 @@
   (when (kiwix-dir-detect)
     (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
   "Specify the default Kiwix data path."
-  :type 'string
-  :group 'kiwix-mode)
-
-(defcustom kiwix-server-port "8000"
-  "Specify the default Kiwix server port."
   :type 'string
   :group 'kiwix-mode)
 
