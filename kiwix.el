@@ -30,8 +30,8 @@
 
 ;;; Usage:
 ;;
-;; [M-x kiwix-launch-server] to launch Kiwix server.
-;; [M-x kiwix-at-point] to search the word under point or the region selected string.
+;; 1. [M-x kiwix-launch-server] to launch Kiwix server.
+;; 2. [M-x kiwix-at-point] to search the word under point or the region selected string.
 
 ;;; Code:
 
