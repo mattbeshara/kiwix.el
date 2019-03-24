@@ -76,18 +76,14 @@
 (defcustom kiwix-default-data-profile-name
   (when (kiwix-dir-detect)
     (car (directory-files
-          (concat
-           (getenv "HOME") "/.www.kiwix.org/kiwix")
-          nil
-          ".*\\.default")))
+          (concat (getenv "HOME") "/.www.kiwix.org/kiwix") nil ".*\\.default")))
   "Specify the default Kiwix data profile path."
   :type 'string
   :group 'kiwix-mode)
 
 (defcustom kiwix-default-data-path
   (when (kiwix-dir-detect)
-    (concat
-     (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
+    (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
   "Specify the default Kiwix data path."
   :type 'string
   :group 'kiwix-mode)
@@ -135,8 +131,7 @@
 
 (defun kiwix-select-library-name ()
   "Select Wikipedia library name abbrev."
-  (completing-read "Wikipedia library abbrev: "
-                   (map-keys kiwix-libraries-abbrev-alist)))
+  (completing-read "Wikipedia library abbrev: " (map-keys kiwix-libraries-abbrev-alist)))
 
 (defun kiwix-get-library-fullname (abbr)
   "Get Kiwix library full name which is associated with `ABBR'."
@@ -148,11 +143,9 @@
   :group 'kiwix-mode)
 
 ;; add default key-value pair to libraries alist.
-(dolist
-    (cons (list
-           (cons "default" (kiwix-get-library-fullname kiwix-default-library))
-           (cons "en" (kiwix-get-library-fullname kiwix-default-library))
-           (cons "zh" (kiwix-get-library-fullname "wikipedia_zh_all"))))
+(dolist (cons (list (cons "default" (kiwix-get-library-fullname kiwix-default-library))
+                    (cons "en" (kiwix-get-library-fullname kiwix-default-library))
+                    (cons "zh" (kiwix-get-library-fullname "wikipedia_zh_all"))))
   (push cons kiwix-libraries-abbrev-alist))
 
 (defcustom kiwix-your-language-library "zh"
@@ -184,22 +177,17 @@
   (let ((library "--library ")
         (port (concat "--port=" kiwix-server-port " "))
         (daemon "--daemon ")
-        (library-path (concat kiwix-default-data-path "/data/library/library.xml"))
-        )
+        (library-path (concat kiwix-default-data-path "/data/library/library.xml")))
     (async-shell-command
      (concat kiwix-server-command library port daemon (shell-quote-argument library-path)))))
 
 (defun kiwix-capitalize-first (string)
   "Only capitalize the first word of STRING."
-  (concat
-   (string (upcase (aref string 0)))
-   (substring string 1)))
+  (concat (string (upcase (aref string 0))) (substring string 1)))
 
 (defun kiwix-query (query &optional library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
-  (let* ((kiwix-library (if library
-                            library
-                          (kiwix-get-library-fullname "default")))
+  (let* ((kiwix-library (if library library (kiwix-get-library-fullname "default")))
          (url (concat
                kiwix-server-url kiwix-library "/A/"
                ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
@@ -220,21 +208,17 @@
 Or When prefix argument `INTERACTIVELY' specified, then prompt
 for query string and library interactively."
   (interactive "P")
-  (let* ((library (if (or kiwix-search-interactively
-                          interactively)
+  (let* ((library (if (or kiwix-search-interactively interactively)
                       (kiwix-get-library-fullname (kiwix-select-library-name))
                     (kiwix-get-library-fullname "default")))
          (query (if interactively
                     (read-string "Kiwix Search: "
                                  (if mark-active
-                                     (buffer-substring
-                                      (region-beginning) (region-end))
+                                     (buffer-substring (region-beginning) (region-end))
                                    (thing-at-point 'symbol)))
-                  (progn
-                    (if mark-active
-                        (buffer-substring
-                         (region-beginning) (region-end))
-                      (thing-at-point 'symbol))))))
+                  (progn (if mark-active
+                             (buffer-substring (region-beginning) (region-end))
+                           (thing-at-point 'symbol))))))
     (message (format "library: %s, query: %s" library query))
     (if (or (null library)
             (string-empty-p library)
@@ -273,8 +257,7 @@ for query string and library interactively."
   "Get library from Org-mode `LINK'."
   (if (string-match-p "[a-zA-Z\ ]+" (match-string 2 link)) ; validate query is English
       ;; convert between libraries full name and abbrev.
-      (kiwix-get-library-fullname (or (match-string 1 link)
-                                      "default"))
+      (kiwix-get-library-fullname (or (match-string 1 link) "default"))
     ;; validate query is non-English
     (kiwix-get-library-fullname kiwix-your-language-library)))
 
