@@ -103,11 +103,14 @@
 
 (defvar kiwix-libraries
   (when (kiwix-dir-detect)
-    (mapcar #'(lambda (var)
-                (replace-regexp-in-string "\.zim" "" var))
+    (mapcar #'kiwix--get-library-name
             (directory-files
              (concat kiwix-default-data-path "/data/library/") nil ".*\.zim")))
   "A list of Kiwix libraries.")
+
+(defun kiwix--get-library-name (file)
+  "Extract library name from library file."
+  (replace-regexp-in-string "\.zim" "" file))
 
 ;; - examples:
 ;; - "wikipedia_en_all" - "wikipedia_en_all_2016-02"
@@ -116,60 +119,26 @@
 ;; - "wiktionary_zh_all" - "wiktionary_zh_all_2015-17"
 ;; - "wikipedia_en_medicine" - "wikipedia_en_medicine_2015-17"
 
-(defun kiwix-construct-libraries-abbrev-alist (alist)
-  "Construct libraries abbrev alist from `ALIST'."
-  (let* ((libraries-name
-          (mapcar #'(lambda (library)
-                      (string-match "\\(.*\\)_[0-9]\\{4\\}-[0-9]\\{2\\}"  library)
-                      (let* ((library-name (match-string 1 library)))
-                        library-name))
-                  alist))
-         (libraries-full-name alist))
-    (cl-pairlis libraries-name libraries-full-name)))
+(defun kiwix-select-library ()
+  "Select Kiwix library name."
+  (completing-read "Kiwix library: " kiwix-libraries))
 
-(defvar kiwix-libraries-abbrev-alist
-  (kiwix-construct-libraries-abbrev-alist kiwix-libraries)
-  "Alist of Kiwix libraries with name and full name.")
-
-(defun kiwix-select-library-name ()
-  "Select Wikipedia library name abbrev."
-  (completing-read "Wikipedia library abbrev: " (map-keys kiwix-libraries-abbrev-alist)))
-
-(defun kiwix-get-library-filename (abbr)
-  "Get Kiwix library full name which is associated with `ABBR'."
-  (cdr (assoc abbr kiwix-libraries-abbrev-alist)))
-
-(defcustom kiwix-default-library "wikipedia_en_all"
+(defcustom kiwix-default-library "wikipedia_en_all.zim"
   "The default kiwix library when library fragment in link not specified."
-  :type 'string
-  :group 'kiwix-mode)
-
-;; add default key-value pair to libraries alist.
-;; (dolist (cons (list (cons "default" (kiwix-get-library-filename kiwix-default-library))
-;;                     (cons "en" (kiwix-get-library-filename "wikipedia_en"))
-;;                     (cons "zh" (kiwix-get-library-filename "wikipedia_zh_all"))))
-;;   (add-to-list 'kiwix-libraries-abbrev-alist cons))
-
-(defcustom kiwix-your-language-library "zh"
-  "Specify the library for your navtive language."
-  :type 'string
-  :group 'kiwix-mode)
-
-(defcustom kiwix-default-library "wikipedia.zim"
-  "Specify default using kiwix library."
   :type 'string
   :safe #'stringp
   :group 'kiwix-mode)
 
-;; test
-;; (kiwix-get-library-filename "wikipedia_en")
-;; (kiwix-get-library-filename "default")
-;; (kiwix-get-library-filename "en")
-;; (kiwix-get-library-filename "zh")
+(defcustom kiwix-your-language-library "zh"
+  "Specify the library for your navtive language."
+  :type 'string
+  :safe #'stringp
+  :group 'kiwix-mode)
 
 (defcustom kiwix-search-interactively t
   "`kiwix-at-point' search interactively."
   :type 'boolean
+  :safe #'booleanp
   :group 'kiwix-mode)
 
 (defcustom kiwix-mode-prefix nil
@@ -192,7 +161,7 @@
                  "--name kiwix-serve "
                  "-v " (file-name-directory library-path) ":" "/data "
                  "kiwix/kiwix-serve"
-                 (kiwix-get-library-filename (kiwix-select-library-name)) ".zim"))
+                 (kiwix-select-library)))
       (async-shell-command
        (concat kiwix-server-command
                library-option port daemon (shell-quote-argument library-path))))))
@@ -203,7 +172,7 @@
 
 (defun kiwix-query (query &optional library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
-  (let* ((kiwix-library (if library library (kiwix-get-library-filename "default")))
+  (let* ((kiwix-library (if library library (kiwix--get-library-name kiwix-default-library)))
          (url (concat
                kiwix-server-url kiwix-library "/A/"
                ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
@@ -225,8 +194,8 @@ Or When prefix argument `INTERACTIVELY' specified, then prompt
 for query string and library interactively."
   (interactive "P")
   (let* ((library (if (or kiwix-search-interactively interactively)
-                      (kiwix-get-library-filename (kiwix-select-library-name))
-                    (kiwix-get-library-filename "default")))
+                      (kiwix-select-library)
+                    (kiwix--get-library-name kiwix-default-library)))
          (query (if interactively
                     (read-string "Kiwix Search: "
                                  (if mark-active
@@ -242,7 +211,6 @@ for query string and library interactively."
             (string-empty-p query))
         (error "Your query is invalid")
       (kiwix-query query library))))
-
 
 ;;;###autoload
 (defun kiwix-at-point-interactive ()
@@ -324,7 +292,7 @@ for query string and library interactively."
   ;; remove those interactive functions. use normal function instead.
   (when (eq major-mode 'wiki-mode)
     (let* ((query (read-string "Wikipedia Query with Kiwix: "))
-           (library (kiwix-select-library-name))
+           (library (kiwix-select-library))
            (link (concat "wikipedia:" "(" library "):" query)))
       (org-store-link-props :type "wikipedia"
                             :link link
