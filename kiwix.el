@@ -48,7 +48,15 @@
   "Kiwix customization options."
   :group 'kiwix-mode)
 
-(defcustom kiwix-server-url "http://127.0.0.1:8000/"
+(defcustom kiwix-server-use-docker t
+  "Using Docker container for kiwix-serve or not?"
+  :type 'boolean
+  :safe #'booleanp
+  :group 'kiwix-mode)
+
+(defcustom kiwix-server-url (if kiwix-server-use-docker
+                                "http://127.0.0.1:8080/"
+                              "http://127.0.0.1:8000/")
   "Specify Kiwix server URL."
   :type 'string
   :group 'kiwix-mode)
