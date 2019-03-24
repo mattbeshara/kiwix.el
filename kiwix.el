@@ -112,7 +112,7 @@
     (mapcar #'(lambda (var)
                 (replace-regexp-in-string "\.zim" "" var))
             (directory-files
-             (concat kiwix-default-data-path "/data/content/") nil ".*\.zim")))
+             (concat kiwix-default-data-path "/data/library/") nil ".*\.zim")))
   "A list of Kiwix libraries.")
 
 ;; - examples:
