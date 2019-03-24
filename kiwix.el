@@ -118,18 +118,12 @@
 ;; - "wiktionary_zh_all" - "wiktionary_zh_all_2015-17"
 ;; - "wikipedia_en_medicine" - "wikipedia_en_medicine_2015-17"
 
-(defun kiwix-select-library ()
+(defun kiwix-select-library (&optional filter)
   "Select Kiwix library name."
-  (completing-read "Kiwix library: " kiwix-libraries))
+  (completing-read "Kiwix library: " kiwix-libraries nil nil filter))
 
 (defcustom kiwix-default-library "wikipedia_en_all.zim"
   "The default kiwix library when library fragment in link not specified."
-  :type 'string
-  :safe #'stringp
-  :group 'kiwix-mode)
-
-(defcustom kiwix-your-language-library "zh"
-  "Specify the library for your navtive language."
   :type 'string
   :safe #'stringp
   :group 'kiwix-mode)
@@ -240,9 +234,9 @@ for query string and library interactively."
   "Get library from Org-mode `LINK'."
   (if (string-match-p "[a-zA-Z\ ]+" (match-string 2 link)) ; validate query is English
       ;; convert between libraries full name and abbrev.
-      (kiwix-get-library-filename (or (match-string 1 link) "default"))
+      (or (match-string 1 link) (kiwix-select-library))
     ;; validate query is non-English
-    (kiwix-get-library-filename kiwix-your-language-library)))
+    (kiwix-select-library "zh")))
 
 ;;;###autoload
 (defun org-wikipedia-link-open (link)
