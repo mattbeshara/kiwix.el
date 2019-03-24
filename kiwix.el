@@ -101,12 +101,6 @@
   :type 'string
   :group 'kiwix-mode)
 
-;;;###autoload
-(defcustom kiwix-support-org-mode-link t
-  "Add support for Org-mode Kiwix link."
-  :type 'boolean
-  :group 'kiwix-mode)
-
 (defvar kiwix-libraries
   (when (kiwix-dir-detect)
     (mapcar #'(lambda (var)
@@ -337,23 +331,27 @@ for query string and library interactively."
                             :description query)
       link)))
 
-(defvar kiwix-mode-map
-  (let ((map (make-sparse-keymap)))
-    map)
-  "kiwix-mode map.")
+;;;###autoload
+(org-link-set-parameters "wikipedia" ; NOTE: use `wikipedia' for future backend changing.
+                         :follow #'org-wikipedia-link-open
+                         :store #'org-wikipedia-store-link
+                         :export #'org-wikipedia-link-export)
+
+;;;###autoload
+(add-hook 'org-store-link-functions 'org-wikipedia-store-link t)
 
 (defun kiwix-mode-enable ()
   "Enable kiwix-mode."
-  (when kiwix-support-org-mode-link
-    (org-link-set-parameters "wikipedia" ; NOTE: use `wikipedia' for future backend changing.
-                             :follow #'org-wikipedia-link-open
-                             :store #'org-wikipedia-store-link
-                             :export #'org-wikipedia-link-export)
-    (add-hook 'org-store-link-functions 'org-wikipedia-store-link t)))
+  )
 
 (defun kiwix-mode-disable ()
   "Disable kiwix-mode."
   )
+
+(defvar kiwix-mode-map
+  (let ((map (make-sparse-keymap)))
+    map)
+  "kiwix-mode map.")
 
 ;;;###autoload
 (define-minor-mode kiwix-mode
