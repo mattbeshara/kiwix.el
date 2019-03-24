@@ -37,11 +37,12 @@
 
 
 (require 'cl-lib)
-;; load for `org-link-set-parameters'
-;;;###autoload
-(require 'org)
+
 ;;;###autoload
 (declare-function 'org-link-set-parameters "org")
+(autoload 'org-link-set-parameters "org")
+(declare-function 'org-store-link-props "org")
+(autoload 'org-store-link-props "org")
 
 (defgroup kiwix-mode nil
   "Kiwix customization options."
@@ -325,10 +326,9 @@ for query string and library interactively."
     (let* ((query (read-string "Wikipedia Query with Kiwix: "))
            (library (kiwix-select-library-name))
            (link (concat "wikipedia:" "(" library "):" query)))
-      (org-store-link-props
-       :type "wikipedia"
-       :link link
-       :description query)
+      (org-store-link-props :type "wikipedia"
+                            :link link
+                            :description query)
       link)))
 
 (defvar kiwix-mode-map
