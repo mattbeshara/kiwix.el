@@ -161,6 +161,12 @@
   :type 'string
   :group 'kiwix-mode)
 
+(defcustom kiwix-default-library "wikipedia.zim"
+  "Specify default using kiwix library."
+  :type 'string
+  :safe #'stringp
+  :group 'kiwix-mode)
+
 ;; test
 ;; (kiwix-get-library-fullname "wikipedia_en")
 ;; (kiwix-get-library-fullname "default")
