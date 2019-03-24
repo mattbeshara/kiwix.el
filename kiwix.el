@@ -69,7 +69,8 @@
 (defun kiwix-dir-detect ()
   "Detect Kiwix profile directory exist."
   (let ((kiwix-dir (concat (getenv "HOME") "/.www.kiwix.org/kiwix")))
-    (unless (not (file-accessible-directory-p kiwix-dir))
+    (if (file-accessible-directory-p kiwix-dir)
+        kiwix-dir
       (warn "ERROR: Kiwix profile directory \".www.kiwix.org/kiwix\" is not accessible."))))
 
 (defcustom kiwix-default-data-profile-name
