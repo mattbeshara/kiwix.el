@@ -188,12 +188,20 @@
 (defun kiwix-launch-server ()
   "Launch Kiwix server."
   (interactive)
-  (let ((library "--library ")
+  (let ((library-option "--library ")
         (port (concat "--port=" kiwix-server-port " "))
         (daemon "--daemon ")
         (library-path (concat kiwix-default-data-path "/data/library/library.xml")))
-    (async-shell-command
-     (concat kiwix-server-command library port daemon (shell-quote-argument library-path)))))
+    (if kiwix-server-use-docker
+        (async-shell-command
+         (concat "docker run -d "
+                 "--name kiwix-serve "
+                 "-v " (file-name-directory library-path) ":" "/data "
+                 "kiwix/kiwix-serve"
+                 (kiwix-get-library-fullname (kiwix-select-library-name)) ".zim"))
+      (async-shell-command
+       (concat kiwix-server-command
+               library-option port daemon (shell-quote-argument library-path))))))
 
 (defun kiwix-capitalize-first (string)
   "Only capitalize the first word of STRING."
