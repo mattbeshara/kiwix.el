@@ -22,11 +22,11 @@
 ;; (use-package kiwix
 ;;   :ensure t
 ;;   :after org
-;;   :bind (:map document-prefix
-;;               ("w" . kiwix-at-point)
-;;               ("W" . kiwix-at-point-interactive)
-;;               ("M-w" . kiwix-launch-server))
-;;   :init (setq kiwix-your-language-library "zh"))
+;;   :commands (kiwix-launch-server kiwix-at-point-interactive)
+;;   :bind (:map document-prefix ("w" . kiwix-at-point-interactive))
+;;   :init (setq kiwix-server-use-docker t
+;;               kiwix-server-url "http://127.0.0.1:8089/"
+;;               kiwix-default-library "wikipedia_zh_all_2015-11.zim"))
 
 ;;; Usage:
 ;;
