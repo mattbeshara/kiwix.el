@@ -1,3 +1,11 @@
+* Intro
+
+This =kiwix.el= supports query =kiwix-tools='s =kiwix-serve= server through URL API.
+
+The =kiwix-serve= server can be started from command-line if you have kiwix-tools
+installed, or from Docker container [fn:1].
+
+
 * How does this extension work?
 
 ** integrate with Emacs
@@ -61,11 +69,27 @@ with RESTful API.
 - Or you can use other language to do this, like Ruby or Python etc.
 
 
+* Install
+
+** MELPA
+
+#+begin_src emacs-lisp :eval no
+(use-package kiwix
+  ;; :ensure t
+  :load-path "~/Code/Emacs/kiwix.el/"
+  :after org
+  :commands (kiwix-launch-server kiwix-at-point-interactive)
+  :bind (:map document-prefix ("w" . kiwix-at-point-interactive))
+  :init (setq kiwix-server-use-docker t
+              kiwix-server-url "http://127.0.0.1:8089/"
+              kiwix-default-library "wikipedia_zh_all_2015-11.zim"))
+#+end_src
+
 * Usage
 
 ** Use in Emacs
 
-=[M-x kiwix-at-point]=
+=[M-x kiwix-at-point-interactive]=
 
 ** Org-mode integration
 
@@ -86,3 +110,7 @@ The =(library)= can be =wikipedia_en=, =wikipedia_zh=, =wiktionary_en=, or =en=,
 - [[wikipedia:Operations%20research][Operations research]] :: the second word is not capitalized.
 - [[wikipedia:%E4%B8%AD%E5%9B%BD][中国]] :: non-english query
 - [[wikipedia:meta-circular%20interpreter][meta-circular interpreter]] :: only capitalize the first word.
+
+* Footnotes
+
+[fn:1] https://github.com/kiwix/kiwix-tools/issues/257
