@@ -141,7 +141,7 @@
   "Select Wikipedia library name abbrev."
   (completing-read "Wikipedia library abbrev: " (map-keys kiwix-libraries-abbrev-alist)))
 
-(defun kiwix-get-library-fullname (abbr)
+(defun kiwix-get-library-filename (abbr)
   "Get Kiwix library full name which is associated with `ABBR'."
   (cdr (assoc abbr kiwix-libraries-abbrev-alist)))
 
@@ -151,10 +151,10 @@
   :group 'kiwix-mode)
 
 ;; add default key-value pair to libraries alist.
-(dolist (cons (list (cons "default" (kiwix-get-library-fullname kiwix-default-library))
-                    (cons "en" (kiwix-get-library-fullname kiwix-default-library))
-                    (cons "zh" (kiwix-get-library-fullname "wikipedia_zh_all"))))
-  (add-to-list 'kiwix-libraries-abbrev-alist cons))
+;; (dolist (cons (list (cons "default" (kiwix-get-library-filename kiwix-default-library))
+;;                     (cons "en" (kiwix-get-library-filename "wikipedia_en"))
+;;                     (cons "zh" (kiwix-get-library-filename "wikipedia_zh_all"))))
+;;   (add-to-list 'kiwix-libraries-abbrev-alist cons))
 
 (defcustom kiwix-your-language-library "zh"
   "Specify the library for your navtive language."
@@ -168,10 +168,10 @@
   :group 'kiwix-mode)
 
 ;; test
-;; (kiwix-get-library-fullname "wikipedia_en")
-;; (kiwix-get-library-fullname "default")
-;; (kiwix-get-library-fullname "en")
-;; (kiwix-get-library-fullname "zh")
+;; (kiwix-get-library-filename "wikipedia_en")
+;; (kiwix-get-library-filename "default")
+;; (kiwix-get-library-filename "en")
+;; (kiwix-get-library-filename "zh")
 
 (defcustom kiwix-search-interactively t
   "`kiwix-at-point' search interactively."
@@ -198,7 +198,7 @@
                  "--name kiwix-serve "
                  "-v " (file-name-directory library-path) ":" "/data "
                  "kiwix/kiwix-serve"
-                 (kiwix-get-library-fullname (kiwix-select-library-name)) ".zim"))
+                 (kiwix-get-library-filename (kiwix-select-library-name)) ".zim"))
       (async-shell-command
        (concat kiwix-server-command
                library-option port daemon (shell-quote-argument library-path))))))
@@ -209,7 +209,7 @@
 
 (defun kiwix-query (query &optional library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
-  (let* ((kiwix-library (if library library (kiwix-get-library-fullname "default")))
+  (let* ((kiwix-library (if library library (kiwix-get-library-filename "default")))
          (url (concat
                kiwix-server-url kiwix-library "/A/"
                ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
@@ -231,8 +231,8 @@ Or When prefix argument `INTERACTIVELY' specified, then prompt
 for query string and library interactively."
   (interactive "P")
   (let* ((library (if (or kiwix-search-interactively interactively)
-                      (kiwix-get-library-fullname (kiwix-select-library-name))
-                    (kiwix-get-library-fullname "default")))
+                      (kiwix-get-library-filename (kiwix-select-library-name))
+                    (kiwix-get-library-filename "default")))
          (query (if interactively
                     (read-string "Kiwix Search: "
                                  (if mark-active
@@ -279,9 +279,9 @@ for query string and library interactively."
   "Get library from Org-mode `LINK'."
   (if (string-match-p "[a-zA-Z\ ]+" (match-string 2 link)) ; validate query is English
       ;; convert between libraries full name and abbrev.
-      (kiwix-get-library-fullname (or (match-string 1 link) "default"))
+      (kiwix-get-library-filename (or (match-string 1 link) "default"))
     ;; validate query is non-English
-    (kiwix-get-library-fullname kiwix-your-language-library)))
+    (kiwix-get-library-filename kiwix-your-language-library)))
 
 ;;;###autoload
 (defun org-wikipedia-link-open (link)
