@@ -6,7 +6,7 @@
 ;; Keywords: kiwix wikipedia
 ;; URL: https://github.com/stardiviner/kiwix.el
 ;; Created: 23th July 2016
-;; Version: 0.1.0
+;; Version: 1.0.0
 ;; Package-Requires: ((emacs "24.4") (cl-lib "0.5"))
 
 ;;; Commentary:
