@@ -1,4 +1,4 @@
-;;; kiwix.el --- Kiwix interface and support.
+;;; kiwix.el --- Searching offline Wikipedia through Kiwix.
 ;;; -*- coding: utf-8 -*-
 
 ;; Author: stardiviner <numbchild@gmail.com>

@@ -1,5 +1,7 @@
 * Intro
 
+Searching offline Wikipedia through Kiwix.
+
 This =kiwix.el= supports query =kiwix-tools='s =kiwix-serve= server through URL API.
 
 The =kiwix-serve= server can be started from command-line if you have kiwix-tools
