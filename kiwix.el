@@ -38,10 +38,7 @@
 
 (require 'cl-lib)
 
-;;;###autoload
-(declare-function 'org-link-set-parameters "org")
 (autoload 'org-link-set-parameters "org")
-(declare-function 'org-store-link-props "org")
 (autoload 'org-store-link-props "org")
 
 (defgroup kiwix-mode nil
@@ -77,7 +74,6 @@
   :type 'string
   :group 'kiwix-mode)
 
-;;;###autoload
 (defun kiwix-dir-detect ()
   "Detect Kiwix profile directory exist."
   (let ((kiwix-dir (concat (getenv "HOME") "/.www.kiwix.org/kiwix")))
@@ -100,16 +96,17 @@
   :type 'string
   :group 'kiwix-mode)
 
+;;;###autoload
+(defun kiwix--get-library-name (file)
+  "Extract library name from library file."
+  (replace-regexp-in-string "\.zim" "" file))
+
 (defvar kiwix-libraries
   (when (kiwix-dir-detect)
     (mapcar #'kiwix--get-library-name
             (directory-files
              (concat kiwix-default-data-path "/data/library/") nil ".*\.zim")))
   "A list of Kiwix libraries.")
-
-(defun kiwix--get-library-name (file)
-  "Extract library name from library file."
-  (replace-regexp-in-string "\.zim" "" file))
 
 ;; - examples:
 ;; - "wikipedia_en_all" - "wikipedia_en_all_2016-02"
