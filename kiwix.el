@@ -290,6 +290,8 @@ for query string and library interactively."
       link)))
 
 ;;;###autoload
+(require 'ol)
+;;;###autoload
 (org-link-set-parameters "wikipedia" ; NOTE: use `wikipedia' for future backend changing.
                          :follow #'org-wikipedia-link-open
                          :store #'org-wikipedia-store-link
