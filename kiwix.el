@@ -7,7 +7,7 @@
 ;; URL: https://github.com/stardiviner/kiwix.el
 ;; Created: 23th July 2016
 ;; Version: 1.0.0
-;; Package-Requires: ((emacs "24.4") (cl-lib "0.5"))
+;; Package-Requires: ((emacs "24.4") (cl-lib "0.5") (request "0.3.0"))
 
 ;;; Commentary:
 
@@ -37,6 +37,7 @@
 
 
 (require 'cl-lib)
+(require 'request)
 
 (autoload 'org-link-set-parameters "org")
 (autoload 'org-store-link-props "org")
@@ -187,13 +188,14 @@ Or When prefix argument `INTERACTIVELY' specified, then prompt
 for query string and library interactively."
   (interactive "P")
   ;; ping kiwix-serve generally to make sure server available.
-  (if (> (length
-          (with-temp-buffer
-            (url-retrieve-synchronously kiwix-server-url)
-            (buffer-string)))
-         1)
-      (setq kiwix-server-available? nil)
-    (setq kiwix-server-available? t))
+  (request kiwix-server-url
+           :type "GET"
+           :sync t
+           :parser (lambda () (libxml-parse-html-region (point-min) (point-max)))
+           :success (function* (lambda (&key data &allow-other-keys)
+                                 (setq kiwix-server-available? t)))
+           :error (lambda (&rest args &key error-thrown &allow-other-keys)
+                    (setq kiwix-server-available? nil)))
   (if kiwix-server-available?
       (let* ((library (if (or kiwix-search-interactively interactively)
                           (kiwix-select-library)
