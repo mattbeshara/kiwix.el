@@ -176,6 +176,9 @@
                ".html")))
     (browse-url url)))
 
+(defvar kiwix-server-available? nil
+  "The kiwix-server current available?")
+
 ;;;###autoload
 (defun kiwix-at-point (&optional interactively)
   "Search for the symbol at point with `kiwix-query'.
@@ -183,24 +186,34 @@
 Or When prefix argument `INTERACTIVELY' specified, then prompt
 for query string and library interactively."
   (interactive "P")
-  (let* ((library (if (or kiwix-search-interactively interactively)
-                      (kiwix-select-library)
-                    (kiwix--get-library-name kiwix-default-library)))
-         (query (if interactively
-                    (read-string "Kiwix Search: "
-                                 (if mark-active
-                                     (buffer-substring (region-beginning) (region-end))
-                                   (thing-at-point 'symbol)))
-                  (progn (if mark-active
-                             (buffer-substring (region-beginning) (region-end))
-                           (thing-at-point 'symbol))))))
-    (message (format "library: %s, query: %s" library query))
-    (if (or (null library)
-            (string-empty-p library)
-            (null query)
-            (string-empty-p query))
-        (error "Your query is invalid")
-      (kiwix-query query library))))
+  ;; ping kiwix-serve generally to make sure server available.
+  (if (> (length
+          (with-temp-buffer
+            (url-retrieve-synchronously kiwix-server-url)
+            (buffer-string)))
+         1)
+      (setq kiwix-server-available? nil)
+    (setq kiwix-server-available? t))
+  (if kiwix-server-available?
+      (let* ((library (if (or kiwix-search-interactively interactively)
+                          (kiwix-select-library)
+                        (kiwix--get-library-name kiwix-default-library)))
+             (query (if interactively
+                        (read-string "Kiwix Search: "
+                                     (if mark-active
+                                         (buffer-substring (region-beginning) (region-end))
+                                       (thing-at-point 'symbol)))
+                      (progn (if mark-active
+                                 (buffer-substring (region-beginning) (region-end))
+                               (thing-at-point 'symbol))))))
+        (message (format "library: %s, query: %s" library query))
+        (if (or (null library)
+                (string-empty-p library)
+                (null query)
+                (string-empty-p query))
+            (error "Your query is invalid")
+          (kiwix-query query library)))
+    (warn "kiwix-serve is not available, please start it at first.")))
 
 ;;;###autoload
 (defun kiwix-at-point-interactive ()
