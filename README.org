@@ -4,9 +4,8 @@ Searching offline Wikipedia through Kiwix.
 
 This =kiwix.el= supports query =kiwix-tools='s =kiwix-serve= server through URL API.
 
-The =kiwix-serve= server can be started from command-line if you have kiwix-tools
+The =kiwix-serve= server can be started from command-line if you have =kiwix-tools=
 installed, or from Docker container [fn:1].
-
 
 * How does this extension work?
 
@@ -75,10 +74,17 @@ with RESTful API.
 - I don't know what Emacs library to use.
 - Or you can use other language to do this, like Ruby or Python etc.
 
-
 * Install
 
 ** Install Kiwix
+
+*** Docker
+
+Reference this issue as background info: https://github.com/kiwix/kiwix-tools/issues/257
+
+#+begin_src sh :eval no
+docker pull kiwix/kiwix-serve
+#+end_src
 
 *** Flatpak
     :PROPERTIES:
@@ -329,7 +335,6 @@ docker container ls --all | grep "kiwix-serve" | cat
 : b47533ecd7f6        kiwix/kiwix-serve               "/usr/local/bin/kiwi…"   3 hours ago         Exited (137) 2 minutes ago                                      kiwix-serve
 : e2f201e655ac        kiwix/kiwix-serve               "/usr/local/bin/kiwi…"   3 hours ago         Created                                                         distracted_hofstadter
 
-
 * Usage
 
 ** Use in Emacs
@@ -347,7 +352,6 @@ The link format is like this:
 #+END_EXAMPLE
 
 The =(library)= can be =wikipedia_en=, =wikipedia_zh=, =wiktionary_en=, or =en=, =zh= etc.
-
 
 * Test
 
