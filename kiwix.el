@@ -194,8 +194,8 @@ for query string and library interactively."
            :parser (lambda () (libxml-parse-html-region (point-min) (point-max)))
            :success (function* (lambda (&key data &allow-other-keys)
                                  (setq kiwix-server-available? t)))
-           :error (lambda (&rest args &key error-thrown &allow-other-keys)
-                    (setq kiwix-server-available? nil)))
+           :error (function* (lambda (&rest args &key error-thrown &allow-other-keys)
+                               (setq kiwix-server-available? nil))))
   (if kiwix-server-available?
       (let* ((library (if (or kiwix-search-interactively interactively)
                           (kiwix-select-library)
