@@ -215,7 +215,8 @@ for query string and library interactively."
                 (string-empty-p query))
             (error "Your query is invalid")
           (kiwix-query query library)))
-    (warn "kiwix-serve is not available, please start it at first.")))
+    (warn "kiwix-serve is not available, please start it at first."))
+  (setq kiwix-server-available? nil))
 
 ;;;###autoload
 (defun kiwix-at-point-interactive ()
