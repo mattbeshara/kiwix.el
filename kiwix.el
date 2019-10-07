@@ -180,14 +180,8 @@
 (defvar kiwix-server-available? nil
   "The kiwix-server current available?")
 
-;;;###autoload
-(defun kiwix-at-point (&optional interactively)
-  "Search for the symbol at point with `kiwix-query'.
-
-Or When prefix argument `INTERACTIVELY' specified, then prompt
-for query string and library interactively."
-  (interactive "P")
-  ;; ping kiwix-serve generally to make sure server available.
+(defun kiwix-ping-server ()
+  "Ping Kiwix server to set `kiwix-server-available?' global state variable."
   (request kiwix-server-url
            :type "GET"
            :sync t
@@ -195,7 +189,16 @@ for query string and library interactively."
            :success (function* (lambda (&key data &allow-other-keys)
                                  (setq kiwix-server-available? t)))
            :error (function* (lambda (&rest args &key error-thrown &allow-other-keys)
-                               (setq kiwix-server-available? nil))))
+                               (setq kiwix-server-available? nil)))))
+
+;;;###autoload
+(defun kiwix-at-point (&optional interactively)
+  "Search for the symbol at point with `kiwix-query'.
+
+Or When prefix argument `INTERACTIVELY' specified, then prompt
+for query string and library interactively."
+  (interactive "P")
+  (kiwix-ping-server)
   (if kiwix-server-available?
       (let* ((library (if (or kiwix-search-interactively interactively)
                           (kiwix-select-library)
