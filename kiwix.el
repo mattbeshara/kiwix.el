@@ -7,7 +7,7 @@
 ;; URL: https://github.com/stardiviner/kiwix.el
 ;; Created: 23th July 2016
 ;; Version: 1.0.0
-;; Package-Requires: ((emacs "24.4") (cl-lib "0.5") (request "0.3.0"))
+;; Package-Requires: ((emacs "24.4") (cl-lib "0.5") (request "0.3.0") (ivy "0.12.0"))
 
 ;;; Commentary:
 
@@ -38,6 +38,7 @@
 
 (require 'cl-lib)
 (require 'request)
+(require 'ivy)
 
 (autoload 'org-link-set-parameters "org")
 (autoload 'org-store-link-props "org")
@@ -222,10 +223,12 @@ for query string and library interactively."
                         (kiwix--get-library-name kiwix-default-library)))
              (query (ivy-read "Kiwix related entries: "
                               'kiwix-ajax-search-hints
-                              ;; (lambda (ivy-last) (kiwix-ajax-search-hints ivy-last))
                               :predicate nil
                               :require-match nil
-                              :initial-input nil
+                              :initial-input (if mark-active
+                                                 (buffer-substring
+                                                  (region-beginning) (region-end))
+                                               (thing-at-point 'symbol))
                               :preselect nil
                               :def nil
                               :history nil
