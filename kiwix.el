@@ -220,8 +220,20 @@ for query string and library interactively."
       (let* ((library (if (or kiwix-search-interactively interactively)
                           (kiwix-select-library)
                         (kiwix--get-library-name kiwix-default-library)))
-             (query (completing-read "Kiwix Search: "
-                                     (kiwix-ajax-search-hints (read-string "Input: ")))))
+             (query (ivy-read "Kiwix related entries: "
+                              'kiwix-ajax-search-hints
+                              ;; (lambda (ivy-last) (kiwix-ajax-search-hints ivy-last))
+                              :predicate nil
+                              :require-match nil
+                              :initial-input nil
+                              :preselect nil
+                              :def nil
+                              :history nil
+                              :keymap nil
+                              :update-fn 'auto
+                              :sort t
+                              :dynamic-collection t
+                              :caller 'ivy-done)))
         (message (format "library: %s, query: %s" library query))
         (if (or (null library)
                 (string-empty-p library)

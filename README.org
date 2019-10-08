@@ -7,73 +7,6 @@ This =kiwix.el= supports query =kiwix-tools='s =kiwix-serve= server through URL 
 The =kiwix-serve= server can be started from command-line if you have =kiwix-tools=
 installed, or from Docker container [fn:1].
 
-* How does this extension work?
-
-** integrate with Emacs
-
-*** core
-
-I found Kiwix will return a URL like this:
-
-#+BEGIN_EXAMPLE
-http://127.0.0.1:8000/wikinews_en_all_2015-11/A/Big_Linux_Beta_3_released.html
-____________________  _____________________  __  _____________________________
-
-< server address >    < library >                <one of the returned results>
-#+END_EXAMPLE
-
-*** steps
-
-1. auto start ~kiwix-serve~ HTTP server.
-2. query/search on kiwix server.
-   1. open kiwix server index page to input to search. (But this is slow, waste time)
-   2. use http language binding library to query on kiwix HTTP server.
-      1. select library in library list page.
-      2. after load a library, simulate type query string in the search input
-         box, the submit to search.
-      3. return the result page HTML or page URL.
-      4. view the result with page URL or page HTML with Emacs browser.
-
-*** auto start kiwix HTTP server
-
-Here is a simple script, you can put it in Linux "*auto-start*".
-
-#+begin_src org
-,#+BEGIN_SRC sh :tangle "~/scripts/kiwix-server.sh"
-#!/usr/bin/env sh
-
-/usr/lib/kiwix/bin/kiwix-serve --library --port=8000 --daemon ~/.www.kiwix.org/kiwix/8ip89lik.default/data/library/library.xml
-,#+END_SRC
-#+end_src
-
-*** search
-
-1. kiwix-search command -> return a list of results.
-
-   #+begin_src org
-   ,#+BEGIN_SRC sh
-   /usr/lib/kiwix/bin/kiwix-search ~/.www.kiwix.org/kiwix/8ip89lik.default/data/index/wikinews_en_all_2015-11.zim.idx linux
-   ,#+END_SRC
-   #+end_src
-
-2. use one element of list as part of the URL.
-
-   http://127.0.0.1:8000/wikinews_en_all_2015-11/A/Big_Linux_Beta_3_released.html
-
-   #+begin_src org
-   ,#+BEGIN_SRC emacs-lisp
-   (browse-url (concat "http://127.0.0.1:8000/" "LIBRARY" "/A/" "RESULT"))
-   ,#+END_SRC
-   #+end_src
-
-*** more advanced?
-
-If you want more advanced functions, you can use communicate kiwix HTTP server
-with RESTful API.
-
-- I don't know what Emacs library to use.
-- Or you can use other language to do this, like Ruby or Python etc.
-
 * Install
 
 ** Install Kiwix
@@ -339,7 +272,7 @@ docker container ls --all | grep "kiwix-serve" | cat
 
 ** Use in Emacs
 
-=[M-x kiwix-at-point-interactive]=
+=[M-x kiwix-at-point]=
 
 ** Org-mode integration
 
@@ -353,12 +286,89 @@ The link format is like this:
 
 The =(library)= can be =wikipedia_en=, =wikipedia_zh=, =wiktionary_en=, or =en=, =zh= etc.
 
+* Changelog
+
+** DONE implemented async instantly input suggestion completion in Ivy
+   CLOSED: [2019-10-08 Tue 22:07]
+   :LOGBOOK:
+   - State "DONE"       from              [2019-10-08 Tue 22:07]
+   :END:
+
+This feature is very subtle :)
+
 * Test
 
 - [[wikipedia:Operations%20Research][Operations Research]] :: query contains space.
 - [[wikipedia:Operations%20research][Operations research]] :: the second word is not capitalized.
 - [[wikipedia:%E4%B8%AD%E5%9B%BD][中国]] :: non-english query
 - [[wikipedia:meta-circular%20interpreter][meta-circular interpreter]] :: only capitalize the first word.
+
+* How does this extension work?
+
+** integrate with Emacs
+
+*** core
+
+I found Kiwix will return a URL like this:
+
+#+BEGIN_EXAMPLE
+http://127.0.0.1:8000/wikinews_en_all_2015-11/A/Big_Linux_Beta_3_released.html
+____________________  _____________________  __  _____________________________
+
+< server address >    < library >                <one of the returned results>
+#+END_EXAMPLE
+
+*** steps
+
+1. auto start ~kiwix-serve~ HTTP server.
+2. query/search on kiwix server.
+   1. open kiwix server index page to input to search. (But this is slow, waste time)
+   2. use http language binding library to query on kiwix HTTP server.
+      1. select library in library list page.
+      2. after load a library, simulate type query string in the search input
+         box, the submit to search.
+      3. return the result page HTML or page URL.
+      4. view the result with page URL or page HTML with Emacs browser.
+
+*** auto start kiwix HTTP server
+
+Here is a simple script, you can put it in Linux "*auto-start*".
+
+#+begin_src org
+,#+BEGIN_SRC sh :tangle "~/scripts/kiwix-server.sh"
+#!/usr/bin/env sh
+
+/usr/lib/kiwix/bin/kiwix-serve --library --port=8000 --daemon ~/.www.kiwix.org/kiwix/8ip89lik.default/data/library/library.xml
+,#+END_SRC
+#+end_src
+
+*** search
+
+1. kiwix-search command -> return a list of results.
+
+   #+begin_src org
+   ,#+BEGIN_SRC sh
+   /usr/lib/kiwix/bin/kiwix-search ~/.www.kiwix.org/kiwix/8ip89lik.default/data/index/wikinews_en_all_2015-11.zim.idx linux
+   ,#+END_SRC
+   #+end_src
+
+2. use one element of list as part of the URL.
+
+   http://127.0.0.1:8000/wikinews_en_all_2015-11/A/Big_Linux_Beta_3_released.html
+
+   #+begin_src org
+   ,#+BEGIN_SRC emacs-lisp
+   (browse-url (concat "http://127.0.0.1:8000/" "LIBRARY" "/A/" "RESULT"))
+   ,#+END_SRC
+   #+end_src
+
+*** more advanced?
+
+If you want more advanced functions, you can use communicate kiwix HTTP server
+with RESTful API.
+
+- I don't know what Emacs library to use.
+- Or you can use other language to do this, like Ruby or Python etc.
 
 * Footnotes
 
