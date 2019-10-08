@@ -220,17 +220,8 @@ for query string and library interactively."
       (let* ((library (if (or kiwix-search-interactively interactively)
                           (kiwix-select-library)
                         (kiwix--get-library-name kiwix-default-library)))
-             (query (completing-read
-                     "Kiwix related entries: "
-                     (kiwix-ajax-search-hints
-                      (if interactively
-                          (read-string "Kiwix Search: "
-                                       (if mark-active
-                                           (buffer-substring (region-beginning) (region-end))
-                                         (thing-at-point 'symbol)))
-                        (progn (if mark-active
-                                   (buffer-substring (region-beginning) (region-end))
-                                 (thing-at-point 'symbol))))))))
+             (query (completing-read "Kiwix Search: "
+                                     (kiwix-ajax-search-hints (read-string "Input: ")))))
         (message (format "library: %s, query: %s" library query))
         (if (or (null library)
                 (string-empty-p library)
