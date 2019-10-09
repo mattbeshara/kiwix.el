@@ -59,7 +59,7 @@
   :safe #'numberp
   :group 'kiwix-mode)
 
-(defcustom kiwix-server-url (format "http://127.0.0.1:%s/" kiwix-server-port)
+(defcustom kiwix-server-url (format "http://127.0.0.1:%s" kiwix-server-port)
   "Specify Kiwix server URL."
   :type 'string
   :group 'kiwix-mode)
@@ -162,11 +162,11 @@
   "Only capitalize the first word of STRING."
   (concat (string (upcase (aref string 0))) (substring string 1)))
 
-(defun kiwix-query (query &optional library)
+(defun kiwix-query (query &optional selected-library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
-  (let* ((kiwix-library (if library library (kiwix--get-library-name kiwix-default-library)))
+  (let* ((library (or selected-library (kiwix--get-library-name kiwix-default-library)))
          (url (concat
-               kiwix-server-url kiwix-library "/A/"
+               kiwix-server-url library "/A/"
                ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
                (url-encode-url
                 ;; convert space to underline: "Beta distribution" "Beta_distribution"
@@ -195,7 +195,11 @@
 (defun kiwix-ajax-search-hints (input)
   "Instantly AJAX request to get available Kiwix entry keywords
 list and return a list result."
-  (let* ((ajax-api "http://127.0.0.1:8089/suggest?content=wikipedia_zh_all_2015-11&term=")
+  (let* ((library (or kiwix-default-library
+                      (kiwix--get-library-name kiwix-default-library)))
+         (ajax-api (format "%s/suggest?content=%s&term="
+                           kiwix-server-url
+                           library))
          (ajax-url (concat ajax-api input))
          (data (request-response-data
                 (request ajax-url
