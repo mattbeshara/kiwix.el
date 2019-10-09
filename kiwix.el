@@ -205,7 +205,7 @@ list and return a list result."
                          :parser #'json-read
                          :success (function*
                                    (lambda (&key data &allow-other-keys)
-                                     (print data)))))))
+                                     data))))))
     (if (vectorp data)
         (mapcar 'cdar data))))
 
