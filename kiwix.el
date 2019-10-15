@@ -187,14 +187,15 @@ Like in function `kiwix-ajax-search-hints'.")
 
 (defun kiwix-ping-server ()
   "Ping Kiwix server to set `kiwix-server-available?' global state variable."
-  (request kiwix-server-url
-           :type "GET"
-           :sync t
-           :parser (lambda () (libxml-parse-html-region (point-min) (point-max)))
-           :success (function* (lambda (&key data &allow-other-keys)
-                                 (setq kiwix-server-available? t)))
-           :error (function* (lambda (&rest args &key error-thrown &allow-other-keys)
-                               (setq kiwix-server-available? nil)))))
+  (let ((inhibit-message t))
+    (request kiwix-server-url
+             :type "GET"
+             :sync t
+             :parser (lambda () (libxml-parse-html-region (point-min) (point-max)))
+             :success (function* (lambda (&key data &allow-other-keys)
+                                   (setq kiwix-server-available? t)))
+             :error (function* (lambda (&rest args &key error-thrown &allow-other-keys)
+                                 (setq kiwix-server-available? nil))))))
 
 (defun kiwix-ajax-search-hints (input &optional selected-library)
   "Instantly AJAX request to get available Kiwix entry keywords
@@ -207,14 +208,15 @@ list and return a list result."
                            library))
          (ajax-url (concat ajax-api input))
          (data (request-response-data
-                (request ajax-url
-                         :type "GET"
-                         :sync t
-                         :headers '(("Content-Type" . "application/json"))
-                         :parser #'json-read
-                         :success (function*
-                                   (lambda (&key data &allow-other-keys)
-                                     data))))))
+                (let ((inhibit-message t))
+                  (request ajax-url
+                           :type "GET"
+                           :sync t
+                           :headers '(("Content-Type" . "application/json"))
+                           :parser #'json-read
+                           :success (function*
+                                     (lambda (&key data &allow-other-keys)
+                                       data)))))))
     (if (vectorp data)
         (mapcar 'cdar data))))
 
