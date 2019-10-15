@@ -286,6 +286,10 @@ The link format is like this:
 
 The =(library)= can be =wikipedia_en=, =wikipedia_zh=, =wiktionary_en=, or =en=, =zh= etc.
 
+** Async search completion keywords candidates
+
+[[file:kiwix.el Ivy async completion.png]]
+
 * Changelog
 
 ** DONE implemented async instantly input suggestion completion in Ivy
