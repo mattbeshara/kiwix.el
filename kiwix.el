@@ -176,7 +176,7 @@ Like in function `kiwix-ajax-search-hints'.")
   "Search `QUERY' in `LIBRARY' with Kiwix."
   (let* ((library (or selected-library (kiwix--get-library-name kiwix-default-library)))
          (url (concat
-               kiwix-server-url library "/A/"
+               kiwix-server-url "/" library "/A/"
                ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
                (url-encode-url
                 ;; convert space to underline: "Beta distribution" "Beta_distribution"
