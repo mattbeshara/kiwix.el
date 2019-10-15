@@ -7,7 +7,7 @@
 ;; URL: https://github.com/stardiviner/kiwix.el
 ;; Created: 23th July 2016
 ;; Version: 1.0.0
-;; Package-Requires: ((emacs "24.4") (cl-lib "0.5") (request "0.3.0") (ivy "0.12.0"))
+;; Package-Requires: ((emacs "24.4") (cl-lib "0.5") (request "0.3.0"))
 
 ;;; Commentary:
 
@@ -38,7 +38,7 @@
 
 (require 'cl-lib)
 (require 'request)
-(require 'ivy)
+(if (featurep 'ivy) (require 'ivy))
 
 (autoload 'org-link-set-parameters "org")
 (autoload 'org-store-link-props "org")
