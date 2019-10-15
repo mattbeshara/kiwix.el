@@ -274,7 +274,7 @@ docker container ls --all | grep "kiwix-serve" | cat
 
 =[M-x kiwix-at-point]=
 
-** Org-mode integration
+** Org Mode integration
 
 =[C-c C-l]= to insert link.
 
