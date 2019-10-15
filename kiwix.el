@@ -98,6 +98,12 @@
   :type 'string
   :group 'kiwix-mode)
 
+(defcustom kiwix-default-browser-function browse-url-generic-program
+  "Set default browser for open kiwix query result URL."
+  :type 'function
+  :safe #'symbolp
+  :group 'kiwix-mode)
+
 ;;;###autoload
 (defun kiwix--get-library-name (file)
   "Extract library name from library file."
@@ -179,7 +185,8 @@ Like in function `kiwix-ajax-search-hints'.")
                  ;; only capitalize the first word. like: "meta-circular interpreter" -> "Meta-circular interpreter"
                  (kiwix-capitalize-first query)
                  nil nil))
-               ".html")))
+               ".html"))
+         (browse-url-browser-function kiwix-default-browser-function))
     (browse-url url)))
 
 (defvar kiwix-server-available? nil

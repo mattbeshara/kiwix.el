@@ -286,6 +286,18 @@ The link format is like this:
 
 The =(library)= can be =wikipedia_en=, =wikipedia_zh=, =wiktionary_en=, or =en=, =zh= etc.
 
+** EWW integration
+
+Set following option in your config to use EWW in Emacs as your default _for
+Kiwix only_.
+
+#+begin_src emacs-lisp
+(setq kiwix-default-browser-function 'eww-browse-url)
+#+end_src
+
+#+RESULTS[<2019-10-15 18:32:09> 3b9749599d792fb0ea5cd3566095ae16f1fc7f30]:
+: eww-browse-url
+
 ** Async search completion keywords candidates
 
 [[file:kiwix.el Ivy async completion.png]]
