@@ -300,7 +300,7 @@ Kiwix only_.
 
 ** Async search completion keywords candidates
 
-[[file:kiwix.el Ivy async completion.png]]
+[[kiwix.el Ivy async completion.png]]
 
 * Changelog
 
