@@ -98,7 +98,7 @@
   :type 'string
   :group 'kiwix-mode)
 
-(defcustom kiwix-default-browser-function browse-url-generic-program
+(defcustom kiwix-default-browser-function browse-url-browser-function
   "Set default browser for open kiwix query result URL."
   :type 'function
   :safe #'symbolp
