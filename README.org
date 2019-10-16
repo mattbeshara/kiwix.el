@@ -298,6 +298,8 @@ Kiwix only_.
 #+RESULTS[<2019-10-15 18:32:09> 3b9749599d792fb0ea5cd3566095ae16f1fc7f30]:
 : eww-browse-url
 
+[[kiwix.el with EWW.png]]
+
 ** Async search completion keywords candidates
 
 [[kiwix.el Ivy async completion.png]]
