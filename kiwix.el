@@ -179,7 +179,7 @@ Like in function `kiwix-ajax-search-hints'.")
         (library-path kiwix-default-library-path))
     (if kiwix-server-use-docker
         (async-shell-command
-         (concat "docker run -d "
+         (concat "docker container run -d "
                  "--name kiwix-serve "
                  "-v " (file-name-directory library-path) ":" "/data "
                  "kiwix/kiwix-serve"
