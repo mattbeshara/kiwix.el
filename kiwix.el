@@ -202,20 +202,30 @@ Like in function `kiwix-ajax-search-hints'.")
          (browse-url-browser-function kiwix-default-browser-function))
     (browse-url url)))
 
+(defun kiwix-docker-check ()
+  "Make sure Docker image 'kiwix/kiwix-server' is available."
+  (let ((docker-image (replace-regexp-in-string
+                       "\n" ""
+                       (shell-command-to-string
+                        "docker image ls kiwix/kiwix-serve | sed -n '2p' | cut -d ' ' -f 1"))))
+    (string-equal docker-image "kiwix/kiwix-serve")))
+
 (defvar kiwix-server-available? nil
   "The kiwix-server current available?")
 
 (defun kiwix-ping-server ()
   "Ping Kiwix server to set `kiwix-server-available?' global state variable."
+  (when kiwix-server-use-docker
+    (kiwix-docker-check))
   (let ((inhibit-message t))
     (request kiwix-server-url
-             :type "GET"
-             :sync t
-             :parser (lambda () (libxml-parse-html-region (point-min) (point-max)))
-             :success (function* (lambda (&key data &allow-other-keys)
-                                   (setq kiwix-server-available? t)))
-             :error (function* (lambda (&rest args &key error-thrown &allow-other-keys)
-                                 (setq kiwix-server-available? nil))))))
+      :type "GET"
+      :sync t
+      :parser (lambda () (libxml-parse-html-region (point-min) (point-max)))
+      :success (function* (lambda (&key data &allow-other-keys)
+                            (setq kiwix-server-available? t)))
+      :error (function* (lambda (&rest args &key error-thrown &allow-other-keys)
+                          (setq kiwix-server-available? nil))))))
 
 (defun kiwix-ajax-search-hints (input &optional selected-library)
   "Instantly AJAX request to get available Kiwix entry keywords
