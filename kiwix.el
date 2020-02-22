@@ -47,7 +47,7 @@
   "Kiwix customization options."
   :group 'kiwix-mode)
 
-(defcustom kiwix-server-use-docker t
+(defcustom kiwix-server-use-docker nil
   "Using Docker container for kiwix-serve or not?"
   :type 'boolean
   :safe #'booleanp
@@ -215,8 +215,9 @@ Like in function `kiwix-ajax-search-hints'.")
 
 (defun kiwix-ping-server ()
   "Ping Kiwix server to set `kiwix-server-available?' global state variable."
-  (when kiwix-server-use-docker
-    (kiwix-docker-check))
+  (if kiwix-server-use-docker
+      (kiwix-docker-check)
+    (async-shell-command "docker pull kiwix/kiwix-serve"))
   (let ((inhibit-message t))
     (request kiwix-server-url
       :type "GET"
