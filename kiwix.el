@@ -98,6 +98,12 @@
   :type 'string
   :group 'kiwix-mode)
 
+(defcustom kiwix-default-completing-read 'ivy
+  "Kiwix default completion frontend. Currently Ivy ('ivy) and Helm ('helm) both supported."
+  :type 'symbol
+  :safe #'symbolp
+  :group 'kiwix-mode)
+
 (defcustom kiwix-default-browser-function browse-url-browser-function
   "Set default browser for open kiwix query result URL."
   :type 'function
@@ -241,24 +247,34 @@ for query string and library interactively."
                                           (kiwix-select-library)
                                         (kiwix--get-library-name kiwix-default-library)))
         (let* ((library kiwix--selected-library)
-               (query (ivy-read "Kiwix related entries: "
-                                `(lambda (input)
-                                   (apply 'kiwix-ajax-search-hints
-                                          input `(,kiwix--selected-library)))
-                                :predicate nil
-                                :require-match nil
-                                :initial-input (if mark-active
-                                                   (buffer-substring
-                                                    (region-beginning) (region-end))
-                                                 (thing-at-point 'symbol))
-                                :preselect nil
-                                :def nil
-                                :history nil
-                                :keymap nil
-                                :update-fn 'auto
-                                :sort t
-                                :dynamic-collection t
-                                :caller 'ivy-done)))
+               (query (case kiwix-default-completing-read
+                        ('helm
+                         (helm :source (helm-build-async-source "kiwix-helm-search-hints"
+                                         :candidates-process
+                                         `(lambda (input)
+                                            (apply 'kiwix-ajax-search-hints
+                                                   input `(,kiwix--selected-library))))
+                               :input (word-at-point)
+                               :buffer "*helm kiwix completion candidates*"))
+                        ('ivy
+                         (ivy-read "Kiwix related entries: "
+                                   `(lambda (input)
+                                      (apply 'kiwix-ajax-search-hints
+                                             input `(,kiwix--selected-library)))
+                                   :predicate nil
+                                   :require-match nil
+                                   :initial-input (if mark-active
+                                                      (buffer-substring
+                                                       (region-beginning) (region-end))
+                                                    (thing-at-point 'symbol))
+                                   :preselect nil
+                                   :def nil
+                                   :history nil
+                                   :keymap nil
+                                   :update-fn 'auto
+                                   :sort t
+                                   :dynamic-collection t
+                                   :caller 'ivy-done)))))
           (message (format "library: %s, query: %s" library query))
           (if (or (null library)
                   (string-empty-p library)
