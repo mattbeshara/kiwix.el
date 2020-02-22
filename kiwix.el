@@ -265,7 +265,8 @@ list and return a list result."
 Or When prefix argument `INTERACTIVELY' specified, then prompt
 for query string and library interactively."
   (interactive "P")
-  (kiwix-ping-server)
+  (unless (kiwix-ping-server)
+    (kiwix-launch-server))
   (if kiwix-server-available?
       (progn
         (setq kiwix--selected-library (if (or kiwix-search-interactively interactively)
