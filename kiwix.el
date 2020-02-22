@@ -115,12 +115,19 @@
   "Extract library name from library file."
   (replace-regexp-in-string "\.zim" "" file))
 
-(defvar kiwix-libraries
+(defun kiwix-get-libraries ()
+  "Check out all available Kiwix libraries."
   (when (kiwix-dir-detect)
     (mapcar #'kiwix--get-library-name
             (directory-files
-             (concat kiwix-default-data-path "/data/library/") nil ".*\.zim")))
+             (concat kiwix-default-data-path "/data/library/") nil ".*\.zim"))))
+
+(defvar kiwix-libraries (kiwix-get-libraries)
   "A list of Kiwix libraries.")
+
+(defun kiwix-libraries-refresh ()
+  "A helper function to refresh available Kiwx libraries."
+  (setq kiwix-libraries (kiwix-get-libraries)))
 
 (defvar kiwix--selected-library nil
   "Global variable of currently select library used in anonymous function.
