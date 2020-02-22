@@ -96,6 +96,14 @@
     (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
   "Specify the default Kiwix data path."
   :type 'string
+  :safe #'stringp
+  :group 'kiwix-mode)
+
+(defcustom kiwix-default-library-path (file-name-directory
+                                       (concat kiwix-default-data-path "/data/library/library.xml"))
+  "Kiwix libraries path."
+  :type 'string
+  :safe #'stringp
   :group 'kiwix-mode)
 
 (defcustom kiwix-default-completing-read 'ivy
@@ -119,8 +127,7 @@
   "Check out all available Kiwix libraries."
   (when (kiwix-dir-detect)
     (mapcar #'kiwix--get-library-name
-            (directory-files
-             (concat kiwix-default-data-path "/data/library/") nil ".*\.zim"))))
+            (directory-files kiwix-default-library-path nil ".*\.zim"))))
 
 (defvar kiwix-libraries (kiwix-get-libraries)
   "A list of Kiwix libraries.")
@@ -169,7 +176,7 @@ Like in function `kiwix-ajax-search-hints'.")
   (let ((library-option "--library ")
         (port (concat "--port=" kiwix-server-port " "))
         (daemon "--daemon ")
-        (library-path (concat kiwix-default-data-path "/data/library/library.xml")))
+        (library-path kiwix-default-library-path))
     (if kiwix-server-use-docker
         (async-shell-command
          (concat "docker run -d "
