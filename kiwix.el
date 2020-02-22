@@ -269,7 +269,8 @@ for query string and library interactively."
     (kiwix-launch-server))
   (if kiwix-server-available?
       (progn
-        (setq kiwix--selected-library (if (or kiwix-search-interactively interactively)
+        (setq kiwix--selected-library (if (and (or kiwix-search-interactively interactively)
+                                               (not kiwix-server-use-docker))
                                           (kiwix-select-library)
                                         (kiwix--get-library-name kiwix-default-library)))
         (let* ((library kiwix--selected-library)
