@@ -220,11 +220,15 @@ Like in function `kiwix-ajax-search-hints'.")
       :type "GET"
       :sync t
       :parser (lambda () (libxml-parse-html-region (point-min) (point-max)))
-      :error (cl-function (lambda (&rest args &key error-thrown &allow-other-keys)
-                            (setq kiwix-server-available? nil)
-                            (warn "kiwix.el ping server error: %S" error-thrown)))
-      :success (cl-function (lambda (&key data &allow-other-keys)
-                              (setq kiwix-server-available? t)))
+      :error (cl-function
+              (lambda (&rest args &key error-thrown &allow-other-keys)
+                (setq kiwix-server-available? nil)
+                (when (string-equal (cdr (request-response-error-thrown kiwix-response))
+                                    "exited abnormally with code 7\n")
+                  (warn "kiwix.el failed to connect to host. exited abnormally with status code: 7."))))
+      :success (cl-function
+                (lambda (&key data &allow-other-keys)
+                  (setq kiwix-server-available? t)))
       :status-code '((404 . (lambda (&rest _) (message (format "Endpoint %s does not exist." url))))
                      (500 . (lambda (&rest _) (message (format "Error from  %s." url))))))))
 
