@@ -224,7 +224,9 @@ Like in function `kiwix-ajax-search-hints'.")
                             (setq kiwix-server-available? nil)
                             (warn "kiwix.el ping server error: %S" error-thrown)))
       :success (cl-function (lambda (&key data &allow-other-keys)
-                              (setq kiwix-server-available? t))))))
+                              (setq kiwix-server-available? t)))
+      :status-code '((404 . (lambda (&rest _) (message (format "Endpoint %s does not exist." url))))
+                     (500 . (lambda (&rest _) (message (format "Error from  %s." url))))))))
 
 (defun kiwix-ajax-search-hints (input &optional selected-library)
   "Instantly AJAX request to get available Kiwix entry keywords
