@@ -220,10 +220,11 @@ Like in function `kiwix-ajax-search-hints'.")
       :type "GET"
       :sync t
       :parser (lambda () (libxml-parse-html-region (point-min) (point-max)))
-      :success (function* (lambda (&key data &allow-other-keys)
-                            (setq kiwix-server-available? t)))
-      :error (function* (lambda (&rest args &key error-thrown &allow-other-keys)
-                          (setq kiwix-server-available? nil))))))
+      :error (cl-function (lambda (&rest args &key error-thrown &allow-other-keys)
+                            (setq kiwix-server-available? nil)
+                            (warn "kiwix.el ping server error: %S" error-thrown)))
+      :success (cl-function (lambda (&key data &allow-other-keys)
+                              (setq kiwix-server-available? t))))))
 
 (defun kiwix-ajax-search-hints (input &optional selected-library)
   "Instantly AJAX request to get available Kiwix entry keywords
