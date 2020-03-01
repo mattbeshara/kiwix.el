@@ -114,7 +114,14 @@
 
 (defcustom kiwix-default-browser-function browse-url-browser-function
   "Set default browser for open kiwix query result URL."
-  :type 'function
+  :type '(choice
+          (const :tag "browse-url default function" browse-url-default-browser)
+          (const :tag "EWW" eww-browse-url)
+          (const :tag "EAF web browser" eaf-open-browser)
+          (const :tag "Firefox web browser" browse-url-firefox)
+          (const :tag "Google Chrome web browser" browse-url-chrome)
+          (const :tag "Conkeror web browser" browse-url-conkeror)
+          (const :tag "xwidget browser" xwidget-webkit-browse-url))
   :safe #'symbolp
   :group 'kiwix-mode)
 
