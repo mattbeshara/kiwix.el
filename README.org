@@ -2,9 +2,9 @@
 
 Searching offline Wikipedia through Kiwix.
 
-[[file:kiwix.el Ivy async completion.png]]
+[[kiwix.el Ivy async completion.png]]
 
-[[file:kiwix.el with EWW.png]]
+[[kiwix.el with EWW.png]]
 
 This =kiwix.el= supports query =kiwix-tools='s =kiwix-serve= server through URL API.
 
@@ -312,11 +312,11 @@ Kiwix only_.
 #+RESULTS[<2019-10-15 18:32:09> 3b9749599d792fb0ea5cd3566095ae16f1fc7f30]:
 : eww-browse-url
 
-[[file:kiwix.el with EWW.png]]
+[[kiwix.el with EWW.png]]
 
 ** Async search completion keywords candidates
 
-[[file:kiwix.el Ivy async completion.png]]
+[[kiwix.el Ivy async completion.png]]
 
 * Changelog
 
