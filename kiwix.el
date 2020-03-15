@@ -190,8 +190,8 @@ Like in function `kiwix-ajax-search-hints'.")
          (concat "docker container run -d "
                  "--name kiwix-serve "
                  "-v " (file-name-directory library-path) ":" "/data "
-                 "kiwix/kiwix-serve"
-                 (kiwix-select-library)))
+                 "kiwix/kiwix-serve "
+                 "--library library.xml"))
       (async-shell-command
        (concat kiwix-server-command
                library-option port daemon (shell-quote-argument library-path))))))
