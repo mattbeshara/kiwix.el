@@ -162,8 +162,24 @@ Given =wikipedia.zim= ([[#ZIM][Zim database files]]) resides in =/tmp/zim/=, exe
 following command:
 
 #+begin_src sh :eval no
-docker container run -v /tmp/zim:/data -p 8080:80 kiwix/kiwix-serve wikipedia.zim
+# if you don't have libraries index file "library.xml"
+docker container run -d --name kiwix-serve -v /tmp/zim:/data -p 8080:80 kiwix/kiwix-serve wikipedia.zim
+# if you have libraries index file "library.xml"
+docker container run -d --name kiwix-serve -v /tmp/zim:/data -p 8080:80 kiwix/kiwix-serve --library library.xml
 #+end_src
+
+*NOTE*: You can generate the libraries index file "library.xml" with following command:
+
+#+begin_src sh
+cd ~/.www.kiwix.org/kiwix/nsz6b6tr.default/data/library/
+
+for zim in $(ls *.zim); do
+  kiwix-manage library.xml add $zim
+done
+#+end_src
+
+*NOTE*: Using the libraries index file method, you can have all libraries served
+in Docker container instead of just one library.
 
 If you put ZIM files in other places not =/tmp/zim/=, you can use follow my command:
 
@@ -177,13 +193,7 @@ docker container run -d \
 #+end_src
 
 Visit http://localhost:8080 or http://localhost:8089 (if you exposed different
-port), you will see:
-
-[[file:data/e8/2e194f-2cc8-45eb-a378-f8bd6d7c6b1a/screenshot_1.png]]
-
-Load the wikipedia.zim library, you will see:
-
-[[file:data/e8/2e194f-2cc8-45eb-a378-f8bd6d7c6b1a/screenshot_2.png]]
+port).
 
 For easy launch the docker run command, you can add command alias in shell profile:
 
