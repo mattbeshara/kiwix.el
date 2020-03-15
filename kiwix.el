@@ -156,6 +156,7 @@ Like in function `kiwix-ajax-search-hints'.")
 
 (defun kiwix-select-library (&optional filter)
   "Select Kiwix library name."
+  (kiwix-libraries-refresh)
   (completing-read "Kiwix library: " kiwix-libraries nil t filter))
 
 (defcustom kiwix-default-library "wikipedia_en_all.zim"
