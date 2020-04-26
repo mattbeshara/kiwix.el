@@ -339,11 +339,17 @@ for query string and library interactively."
 ;; - group 2: link? (match everything but ], space, tab, carriage return, linefeed by using [^] \n\t\r]*)
 ;; for open wiki search query with local application database.
 
+(defun chinese-string-p (string)
+  "Return t if STRING is a Chinese string."
+  (if (string-match (format "\\cC\\{%s\\}" (length string)) string)
+      t
+    nil))
+
 (defun kiwix-org-get-library (link)
   "Get library from Org-mode `LINK'."
   (if (string-match-p "[a-zA-Z\ ]+" (match-string 2 link)) ; validate query is English
       ;; convert between libraries full name and abbrev.
-      (or (match-string 1 link) (kiwix-select-library))
+      (or (match-string 1 link) (kiwix-select-library "en"))
     ;; validate query is non-English
     (kiwix-select-library "zh")))
 
@@ -354,7 +360,7 @@ for query string and library interactively."
   ;; - query : should not exclude space
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^]\n\t\r]*\\)"  link) ; (library):query
     (let* ((library (kiwix-org-get-library link))
-           (query (match-string 2 link))
+           (query (if (chinese-string-p link) link (match-string 2 link)))
            (url (concat
                  kiwix-server-url
                  library "/A/"
