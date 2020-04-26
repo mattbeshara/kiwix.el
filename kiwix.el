@@ -347,7 +347,7 @@ for query string and library interactively."
     ;; validate query is non-English
     (kiwix-select-library "zh")))
 
-
+;;;###autoload
 (defun org-wikipedia-link-open (link)
   "Open LINK in external Wikipedia program."
   ;; The regexp: (library):query
@@ -370,6 +370,7 @@ for query string and library interactively."
       ;; (prin1 (format "library: %s, query: %s, url: %s" library query url))
       (browse-url url))))
 
+;;;###autoload
 (defun org-wikipedia-link-export (link description format)
   "Export the Wikipedia LINK with DESCRIPTION for FORMAT from Org files."
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)" link)
@@ -386,6 +387,7 @@ for query string and library interactively."
          ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
          (t path))))))
 
+;;;###autoload
 (defun org-wikipedia-store-link ()
   "Store a link to a Wikipedia link."
   ;; [C-c o C-l l] `org-store-link'
@@ -399,11 +401,13 @@ for query string and library interactively."
                             :description query)
       link)))
 
+;;;###autoload
 (org-link-set-parameters "wikipedia" ; NOTE: use `wikipedia' for future backend changing.
                          :follow #'org-wikipedia-link-open
                          :store #'org-wikipedia-store-link
                          :export #'org-wikipedia-link-export)
 
+;;;###autoload
 (add-hook 'org-store-link-functions 'org-wikipedia-store-link t)
 
 (defun kiwix-mode-enable ()
