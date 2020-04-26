@@ -347,34 +347,42 @@ for query string and library interactively."
 
 (defun kiwix-org-get-library (link)
   "Get library from Org-mode `LINK'."
-  (if (string-match-p "[a-zA-Z\ ]+" (match-string 2 link)) ; validate query is English
-      ;; convert between libraries full name and abbrev.
-      (or (match-string 1 link) (kiwix-select-library "en"))
-    ;; validate query is non-English
-    (kiwix-select-library "zh")))
+  (cond
+   ((chinese-string-p link)
+    (kiwix-select-library "zh"))
+   ((string-match-p "[a-zA-Z\ ]+" link)
+    ;; convert between libraries full name and abbrev.
+    (kiwix-select-library "en"))
+   (t (kiwix-select-library))))
 
 ;;;###autoload
 (defun org-wikipedia-link-open (link)
   "Open LINK in external Wikipedia program."
   ;; The regexp: (library):query
   ;; - query : should not exclude space
-  (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^]\n\t\r]*\\)"  link) ; (library):query
-    (let* ((library (kiwix-org-get-library link))
-           (query (if (chinese-string-p link) link (match-string 2 link)))
-           (url (concat
-                 kiwix-server-url
-                 library "/A/"
-                 ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
-                 (url-encode-url
-                  ;; convert space to underline: "Beta distribution" "Beta_distribution"
-                  (replace-regexp-in-string
-                   " " "_"
-                   ;; only capitalize the first word. like: "meta-circular interpreter" -> "Meta-circular interpreter"
-                   (kiwix-capitalize-first query)
-                   nil nil))
-                 ".html")))
-      ;; (prin1 (format "library: %s, query: %s, url: %s" library query url))
-      (browse-url url))))
+  ;; match link spec: "(library):query" with regexp "([^).]*):?:.*"
+  ;; (string-match "\\(?:(\\(.*\\)):\\)?\\([^]\n\t\r]*\\)"  link)
+  (string-match "(\\([^)].*\\)):\\(.*\\)" link)
+  (let* ((library (kiwix-org-get-library link))
+         (query (cond
+                 ((chinese-string-p link) link)
+                 ((string-match-p "(\\([^)].*\\)):\\(.*\\)" link)
+                  (match-string 2 link))
+                 (t link)))
+         (url (concat
+               kiwix-server-url
+               "/" library "/A/"
+               ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
+               (url-encode-url
+                ;; convert space to underline: "Beta distribution" "Beta_distribution"
+                (replace-regexp-in-string
+                 " " "_"
+                 ;; only capitalize the first word. like: "meta-circular interpreter" -> "Meta-circular interpreter"
+                 (kiwix-capitalize-first query)
+                 nil nil))
+               ".html")))
+    ;; (prin1 (format "library: %s, query: %s, url: %s" library query url))
+    (browse-url url)))
 
 ;;;###autoload
 (defun org-wikipedia-link-export (link description format)
