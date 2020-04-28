@@ -1,6 +1,6 @@
 ;;; org-kiwix.el --- Org Mode link support -*- lexical-binding: t; -*-
 
-;;; Time-stamp: <2020-04-28 10:06:10 stardiviner>
+;;; Time-stamp: <2020-04-28 10:38:02 stardiviner>
 
 ;;; Commentary:
 
@@ -102,11 +102,19 @@
                             :description query)
       link)))
 
+(defun org-wikipedia-complete-link (&optional arg)
+  "Use kiwix AJAX request to provide available completion keywords."
+  (let* ((input (or arg (read-from-minibuffer "Search keyword: ")))
+         (keywords (kiwix-ajax-search-hints input)))
+    (concat "wikipedia:"
+            (completing-read "Available keywords: " keywords))))
+
 ;;;###autoload
 (org-link-set-parameters "wikipedia" ; NOTE: use `wikipedia' for future backend changing.
                          :follow #'org-wikipedia-open-link
                          :store #'org-wikipedia-store-link
-                         :export #'org-wikipedia-export-link)
+                         :export #'org-wikipedia-export-link
+                         :complete #'org-wikipedia-complete-link)
 
 ;;;###autoload
 (add-hook 'org-store-link-functions 'org-wikipedia-store-link t)

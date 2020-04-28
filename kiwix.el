@@ -243,25 +243,26 @@ Like in function `kiwix-ajax-search-hints'.")
 (defun kiwix-ajax-search-hints (input &optional selected-library)
   "Instantly AJAX request to get available Kiwix entry keywords
 list and return a list result."
-  (let* ((library (or selected-library
-                      (kiwix--get-library-name (or kiwix--selected-library
-                                                   kiwix-default-library))))
-         (ajax-api (format "%s/suggest?content=%s&term="
-                           kiwix-server-url
-                           library))
-         (ajax-url (concat ajax-api input))
-         (data (request-response-data
-                (let ((inhibit-message t))
-                  (request ajax-url
-                           :type "GET"
-                           :sync t
-                           :headers '(("Content-Type" . "application/json"))
-                           :parser #'json-read
-                           :success (function*
-                                     (lambda (&key data &allow-other-keys)
-                                       data)))))))
-    (if (vectorp data)
-        (mapcar 'cdar data))))
+  (when input
+    (let* ((library (or selected-library
+                        (kiwix--get-library-name (or kiwix--selected-library
+                                                     kiwix-default-library))))
+           (ajax-api (format "%s/suggest?content=%s&term="
+                             kiwix-server-url
+                             library))
+           (ajax-url (concat ajax-api input))
+           (data (request-response-data
+                  (let ((inhibit-message t))
+                    (request ajax-url
+                      :type "GET"
+                      :sync t
+                      :headers '(("Content-Type" . "application/json"))
+                      :parser #'json-read
+                      :success (function*
+                                (lambda (&key data &allow-other-keys)
+                                  data)))))))
+      (if (vectorp data)
+          (mapcar 'cdar data)))))
 
 ;;;###autoload
 (defun kiwix-at-point (&optional interactively)
