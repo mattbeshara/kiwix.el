@@ -356,7 +356,7 @@ for query string and library interactively."
    (t (kiwix-select-library))))
 
 ;;;###autoload
-(defun org-wikipedia-link-open (link)
+(defun org-wikipedia-open-link (link)
   "Open LINK in external Wikipedia program."
   ;; The regexp: (library):query
   ;; - query : should not exclude space
@@ -385,7 +385,7 @@ for query string and library interactively."
     (browse-url url)))
 
 ;;;###autoload
-(defun org-wikipedia-link-export (link description format)
+(defun org-wikipedia-export-link (link description format)
   "Export the Wikipedia LINK with DESCRIPTION for FORMAT from Org files."
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)" link)
     (let* ((library (kiwix-org-get-library link))
@@ -417,9 +417,9 @@ for query string and library interactively."
 
 ;;;###autoload
 (org-link-set-parameters "wikipedia" ; NOTE: use `wikipedia' for future backend changing.
-                         :follow #'org-wikipedia-link-open
+                         :follow #'org-wikipedia-open-link
                          :store #'org-wikipedia-store-link
-                         :export #'org-wikipedia-link-export)
+                         :export #'org-wikipedia-export-link)
 
 ;;;###autoload
 (add-hook 'org-store-link-functions 'org-wikipedia-store-link t)
