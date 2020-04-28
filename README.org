@@ -282,6 +282,22 @@ docker container ls --all | grep "kiwix-serve" | cat
 : b47533ecd7f6        kiwix/kiwix-serve               "/usr/local/bin/kiwi…"   3 hours ago         Exited (137) 2 minutes ago                                      kiwix-serve
 : e2f201e655ac        kiwix/kiwix-serve               "/usr/local/bin/kiwi…"   3 hours ago         Created                                                         distracted_hofstadter
 
+* Load
+
+** use-package
+
+#+begin_src emacs-lisp
+(use-package kiwix
+  :ensure t
+  :after org
+  :require (org-kiwix)
+  :commands (kiwix-launch-server kiwix-at-point-interactive)
+  :init (setq kiwix-server-use-docker t
+              kiwix-server-port 8089
+              kiwix-default-library "wikipedia_en_all_2016-02.zim" ; "wikipedia_zh_all_2015-11.zim"
+              kiwix-default-browser-function 'eww))
+#+end_src
+
 * Usage
 
 ** Use in Emacs
