@@ -251,6 +251,8 @@ Like in function `kiwix-ajax-search-hints'.")
   "Instantly AJAX request to get available Kiwix entry keywords
 list and return a list result."
   (kiwix-server-url-update)
+  (kiwix-ping-server)
+  (when (and input kiwix-server-available?)
     (let* ((library (or selected-library
                         (kiwix--get-library-name (or kiwix--selected-library
                                                      kiwix-default-library))))
