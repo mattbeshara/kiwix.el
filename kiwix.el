@@ -176,6 +176,11 @@ Like in function `kiwix-ajax-search-hints'.")
   :type 'kbd
   :group 'kiwix-mode)
 
+;; update kiwix server url and port
+(defun kiwix-server-url-update ()
+  "Update `kiwix-server-url' everytime used. In case setting port is lated."
+  (setq kiwix-server-url (format "http://127.0.0.1:%s" kiwix-server-port)))
+
 ;; launch Kiwix server
 ;;;###autoload
 (defun kiwix-launch-server ()
@@ -202,6 +207,7 @@ Like in function `kiwix-ajax-search-hints'.")
 
 (defun kiwix-query (query &optional selected-library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
+  (kiwix-server-url-update)
   (let* ((library (or selected-library (kiwix--get-library-name kiwix-default-library)))
          (url (concat kiwix-server-url "/search?content=" library "&pattern=" (url-hexify-string query)))
          (browse-url-browser-function kiwix-default-browser-function))
@@ -224,6 +230,7 @@ Like in function `kiwix-ajax-search-hints'.")
       (kiwix-docker-check)
     (async-shell-command "docker pull kiwix/kiwix-serve"))
   (let ((inhibit-message t))
+    (kiwix-server-url-update)
     (request kiwix-server-url
       :type "GET"
       :sync t
@@ -243,7 +250,7 @@ Like in function `kiwix-ajax-search-hints'.")
 (defun kiwix-ajax-search-hints (input &optional selected-library)
   "Instantly AJAX request to get available Kiwix entry keywords
 list and return a list result."
-  (when input
+  (kiwix-server-url-update)
     (let* ((library (or selected-library
                         (kiwix--get-library-name (or kiwix--selected-library
                                                      kiwix-default-library))))
