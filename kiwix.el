@@ -40,9 +40,6 @@
 (require 'request)
 (if (featurep 'ivy) (require 'ivy))
 
-(autoload 'org-link-set-parameters "org")
-(autoload 'org-store-link-props "org")
-
 (defgroup kiwix-mode nil
   "Kiwix customization options."
   :group 'kiwix-mode)

@@ -1,6 +1,6 @@
 ;;; org-kiwix.el --- Org Mode link support -*- lexical-binding: t; -*-
 
-;;; Time-stamp: <2020-04-28 10:38:02 stardiviner>
+;;; Time-stamp: <2020-05-04 07:04:56 stardiviner>
 
 ;;; Commentary:
 
@@ -110,14 +110,13 @@
             (completing-read "Available keywords: " keywords))))
 
 ;;;###autoload
-(org-link-set-parameters "wikipedia" ; NOTE: use `wikipedia' for future backend changing.
-                         :follow #'org-wikipedia-open-link
-                         :store #'org-wikipedia-store-link
-                         :export #'org-wikipedia-export-link
-                         :complete #'org-wikipedia-complete-link)
-
-;;;###autoload
-(add-hook 'org-store-link-functions 'org-wikipedia-store-link t)
+(with-eval-after-load 'org
+  (org-link-set-parameters "wikipedia" ; NOTE: use `wikipedia' for future backend changing.
+                           :follow #'org-wikipedia-open-link
+                           :store #'org-wikipedia-store-link
+                           :export #'org-wikipedia-export-link
+                           :complete #'org-wikipedia-complete-link)
+  (add-hook 'org-store-link-functions 'org-wikipedia-store-link t))
 
 
 
