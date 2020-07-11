@@ -1,6 +1,6 @@
 ;;; org-kiwix.el --- Org Mode link support -*- lexical-binding: t; -*-
 
-;;; Time-stamp: <2020-05-12 21:23:23 stardiviner>
+;;; Time-stamp: <2020-07-11 17:39:13 stardiviner>
 
 ;;; Commentary:
 
@@ -37,13 +37,17 @@
 
 (defun kiwix-org-get-library (link)
   "Get library from Org-mode `LINK'."
-  (cond
-   ((chinese-string-p link)
-    (kiwix-select-library "zh"))
-   ((string-match-p "[a-zA-Z\ ]+" link)
-    ;; convert between libraries full name and abbrev.
-    (kiwix-select-library "en"))
-   (t (kiwix-select-library))))
+  (let ((library (catch 'args-out-of-range
+                   (when (string-match "(\\([^)].*\\)):\\(.*\\)" link)
+                     (match-string 1 link)))))
+    (or library
+        (cond
+         ((chinese-string-p link)
+          (kiwix-select-library "zh"))
+         ((string-match-p "[a-zA-Z\ ]+" link)
+          ;; convert between libraries full name and abbrev.
+          (kiwix-select-library "en"))
+         (t (kiwix-select-library))))))
 
 ;;;###autoload
 (defun org-wikipedia-open-link (link)
