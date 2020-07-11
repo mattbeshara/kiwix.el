@@ -107,9 +107,11 @@
 
 (defun org-wikipedia-complete-link (&optional arg)
   "Use kiwix AJAX request to provide available completion keywords."
-  (let* ((input (or arg (read-from-minibuffer "Search keyword: ")))
-         (keywords (kiwix-ajax-search-hints input)))
+  (let* ((query (or arg (read-from-minibuffer "Search keyword: ")))
+         (library (kiwix-select-library))
+         (keywords (kiwix-ajax-search-hints query library)))
     (concat "wikipedia:"
+            "(" library "):"
             (completing-read "Available keywords: " keywords))))
 
 ;;;###autoload
