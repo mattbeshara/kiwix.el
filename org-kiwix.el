@@ -1,6 +1,6 @@
 ;;; org-kiwix.el --- Org Mode link support -*- lexical-binding: t; -*-
 
-;;; Time-stamp: <2020-05-04 07:04:56 stardiviner>
+;;; Time-stamp: <2020-05-12 21:23:23 stardiviner>
 
 ;;; Commentary:
 
@@ -25,6 +25,9 @@
 ;;; Code:
 
 (require 'kiwix)
+
+(autoload 'org-link-set-parameters "org")
+(autoload 'org-store-link-props "org")
 
 (defun chinese-string-p (string)
   "Return t if STRING is a Chinese string."
