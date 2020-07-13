@@ -38,6 +38,9 @@
 
 (require 'cl-lib)
 (require 'request)
+(require 'subr-x)
+(require 'thingatpt)
+(require 'json)
 (if (featurep 'ivy) (require 'ivy))
 
 (defgroup kiwix-mode nil
@@ -263,7 +266,7 @@ list and return a list result."
                       :sync t
                       :headers '(("Content-Type" . "application/json"))
                       :parser #'json-read
-                      :success (function*
+                      :success (cl-function
                                 (lambda (&key data &allow-other-keys)
                                   data)))))))
       (if (vectorp data)
@@ -282,7 +285,7 @@ for query string and library interactively."
       (progn
         (setq kiwix--selected-library (kiwix-select-library))
         (let* ((library kiwix--selected-library)
-               (query (case kiwix-default-completing-read
+               (query (cl-case kiwix-default-completing-read
                         ('helm
                          (helm :source (helm-build-async-source "kiwix-helm-search-hints"
                                          :candidates-process
