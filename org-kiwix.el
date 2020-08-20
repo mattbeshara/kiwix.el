@@ -1,6 +1,6 @@
 ;;; org-kiwix.el --- Org Mode link support -*- lexical-binding: t; -*-
 
-;;; Time-stamp: <2020-07-11 17:39:13 stardiviner>
+;;; Time-stamp: <2020-08-20 11:55:13 stardiviner>
 
 ;;; Commentary:
 
@@ -22,6 +22,10 @@
 ;; - group 2: link? (match everything but ], space, tab, carriage return, linefeed by using [^] \n\t\r]*)
 ;; for open wiki search query with local application database.
 
+;; Usage:
+;;
+;; (add-hook 'org-load-hook #'org-kiwix-setup-link)
+
 ;;; Code:
 
 (require 'kiwix)
@@ -35,6 +39,7 @@
       t
     nil))
 
+;;;###autoload
 (defun kiwix-org-get-library (link)
   "Get library from Org-mode `LINK'."
   (let ((library (catch 'args-out-of-range
@@ -109,6 +114,7 @@
                             :description query)
       link)))
 
+;;;###autoload
 (defun org-wikipedia-complete-link (&optional arg)
   "Use kiwix AJAX request to provide available completion keywords."
   (let* ((query (or arg (read-from-minibuffer "Search keyword: ")))
@@ -119,7 +125,8 @@
             (completing-read "Available keywords: " keywords))))
 
 ;;;###autoload
-(with-eval-after-load 'org
+(defun org-kiwix-setup-link ()
+  "Setup Org link for org-kiwix."
   (org-link-set-parameters "wikipedia" ; NOTE: use `wikipedia' for future backend changing.
                            :follow #'org-wikipedia-open-link
                            :store #'org-wikipedia-store-link

@@ -78,18 +78,15 @@ https://chrome.google.com/webstore/detail/kiwix/donaljnlmapmngakoipdmehbfcioahhk
 
 ** MELPA
 
-#+begin_src org
-,#+begin_src emacs-lisp :eval no
+#+begin_src emacs-lisp :eval no
 (use-package kiwix
-  ;; :ensure t
-  :load-path "~/Code/Emacs/kiwix.el/"
+  :ensure t
   :after org
   :commands (kiwix-launch-server kiwix-at-point-interactive)
-  :bind (:map document-prefix ("w" . kiwix-at-point-interactive))
-  :init (setq kiwix-server-use-docker t
-              kiwix-server-port 8080
-              kiwix-default-library "wikipedia_zh_all_2015-11.zim"))
-,#+end_src
+  :custom ((kiwix-server-use-docker t)
+           (kiwix-server-port 8089)
+           (kiwix-default-library "wikipedia_en_all_2016-02.zim"))
+  :hook (org-load . org-kiwix-setup-link))
 #+end_src
 
 * Setup
