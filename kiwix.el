@@ -116,8 +116,8 @@
   :safe #'stringp
   :group 'kiwix-mode)
 
-(defcustom kiwix-default-library-path (file-name-directory
-                                       (concat kiwix-default-data-path "/data/library/library.xml"))
+(defcustom kiwix-default-library-path
+  (file-name-directory (concat kiwix-default-data-path "/data/library/library.xml"))
   "Kiwix libraries path."
   :type 'string
   :safe #'stringp
@@ -280,8 +280,7 @@ list and return a list result."
                       :success (cl-function
                                 (lambda (&key data &allow-other-keys)
                                   data)))))))
-      (if (vectorp data)
-          (mapcar 'cdar data)))))
+      (if (vectorp data) (mapcar 'cdar data)))))
 
 ;;;###autoload
 (defun kiwix-at-point ()
