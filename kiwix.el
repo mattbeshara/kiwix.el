@@ -39,8 +39,8 @@
 ;; (use-package kiwix
 ;;   :ensure t
 ;;   :after org
-;;   :commands (kiwix-launch-server kiwix-at-point-interactive)
-;;   :bind (:map document-prefix ("w" . kiwix-at-point-interactive))
+;;   :commands (kiwix-launch-server kiwix-at-point)
+;;   :bind (:map document-prefix ("w" . kiwix-at-point))
 ;;   :init (setq kiwix-server-use-docker t
 ;;               kiwix-server-port 8080
 ;;               kiwix-default-library "wikipedia_zh_all_2015-11.zim"))
@@ -182,12 +182,6 @@ Like in function `kiwix-ajax-search-hints'.")
   :safe #'stringp
   :group 'kiwix-mode)
 
-(defcustom kiwix-search-interactively t
-  "`kiwix-at-point' search interactively."
-  :type 'boolean
-  :safe #'booleanp
-  :group 'kiwix-mode)
-
 (defcustom kiwix-mode-prefix nil
   "Specify kiwix-mode keybinding prefix before loading."
   :type 'kbd
@@ -290,12 +284,9 @@ list and return a list result."
           (mapcar 'cdar data)))))
 
 ;;;###autoload
-(defun kiwix-at-point (&optional interactively)
-  "Search for the symbol at point with `kiwix-query'.
-
-Or When prefix argument `INTERACTIVELY' specified, then prompt
-for query string and library interactively."
-  (interactive "P")
+(defun kiwix-at-point ()
+  "Search for the symbol at point with `kiwix-query'."
+  (interactive)
   (unless (kiwix-ping-server)
     (kiwix-launch-server))
   (if kiwix-server-available?
@@ -339,13 +330,6 @@ for query string and library interactively."
             (kiwix-query query library))))
     (warn "kiwix-serve is not available, please start it at first."))
   (setq kiwix-server-available? nil))
-
-;;;###autoload
-(defun kiwix-at-point-interactive ()
-  "Interactively input to query with kiwix."
-  (interactive)
-  (let ((current-prefix-arg t))
-    (call-interactively 'kiwix-at-point)))
 
 ;;===============================================================================
 

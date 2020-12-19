@@ -82,7 +82,7 @@ https://chrome.google.com/webstore/detail/kiwix/donaljnlmapmngakoipdmehbfcioahhk
 (use-package kiwix
   :ensure t
   :after org
-  :commands (kiwix-launch-server kiwix-at-point-interactive)
+  :commands (kiwix-launch-server kiwix-at-point)
   :custom ((kiwix-server-use-docker t)
            (kiwix-server-port 8089)
            (kiwix-default-library "wikipedia_en_all_2016-02.zim"))
@@ -287,7 +287,7 @@ docker container ls --all | grep "kiwix-serve" | cat
 (use-package kiwix
   :ensure t
   :after org
-  :commands (kiwix-launch-server kiwix-at-point-interactive)
+  :commands (kiwix-launch-server kiwix-at-point)
   :init (require 'org-kiwix)
   (setq kiwix-server-use-docker t
               kiwix-server-port 8089
