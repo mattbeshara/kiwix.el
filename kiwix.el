@@ -367,14 +367,11 @@ for query string and library interactively."
   "Kiwix global minor mode for searching Kiwix serve."
   :require 'kiwix-mode
   :init-value nil
+  :global t
   :lighter " Kiwix"
   :group 'kiwix-mode
   :keymap kiwix-mode-map
   (if kiwix-mode (kiwix-mode-enable) (kiwix-mode-disable)))
-
-;;;###autoload
-(define-global-minor-mode global-kiwix-mode kiwix-mode
-  kiwix-mode)
 
 
 (provide 'kiwix)
