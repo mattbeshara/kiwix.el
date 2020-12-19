@@ -1,5 +1,5 @@
-;;; kiwix.el --- Searching offline Wikipedia through Kiwix.
-;;; -*- coding: utf-8 -*-
+;;; kiwix.el --- Searching offline Wikipedia through Kiwix.  -*- lexical-binding: t; -*-
+;; -*- coding: utf-8 -*-
 
 ;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
 
