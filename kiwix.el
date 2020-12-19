@@ -258,7 +258,7 @@ Like in function `kiwix-ajax-search-hints'.")
                 (when (string-equal (cdr error-thrown) "exited abnormally with code 7\n")
                   (warn "kiwix.el failed to connect to host. exited abnormally with status code: 7."))))
       :success (cl-function
-                (lambda (&key data &allow-other-keys)
+                (lambda (&key _data &allow-other-keys)
                   (setq kiwix-server-available? t)))
       :status-code '((404 . (lambda (&rest _) (message (format "Endpoint %s does not exist." url))))
                      (500 . (lambda (&rest _) (message (format "Error from  %s." url))))))))
