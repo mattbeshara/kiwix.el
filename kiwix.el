@@ -58,7 +58,6 @@
 (require 'subr-x)
 (require 'thingatpt)
 (require 'json)
-(if (featurep 'ivy) (require 'ivy))
 
 (defgroup kiwix-mode nil
   "Kiwix customization options."
@@ -123,7 +122,8 @@
   :safe #'stringp
   :group 'kiwix-mode)
 
-(defcustom kiwix-default-completing-read 'ivy
+(defcustom kiwix-default-completing-read (cond ((fboundp 'ivy-read) 'ivy)
+                                               ((fboundp 'helm) 'helm))
   "Kiwix default completion frontend. Currently Ivy ('ivy) and Helm ('helm) both supported."
   :type 'symbol
   :safe #'symbolp
