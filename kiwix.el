@@ -30,11 +30,11 @@
 
 ;;; This currently only works for Linux, not tested for Mac OS X and Windows.
 
-;;; Kiwix installation
+;;;; Kiwix installation
 ;;
 ;; http://www.kiwix.org
 
-;;; Config:
+;;;; Config:
 ;;
 ;; (use-package kiwix
 ;;   :ensure t
@@ -45,7 +45,7 @@
 ;;               kiwix-server-port 8080
 ;;               kiwix-default-library "wikipedia_zh_all_2015-11.zim"))
 
-;;; Usage:
+;;;; Usage:
 ;;
 ;; 1. [M-x kiwix-launch-server] to launch Kiwix server.
 ;; 2. [M-x kiwix-at-point] to search the word under point or the region selected string.
