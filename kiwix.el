@@ -66,19 +66,16 @@
 (defcustom kiwix-server-use-docker nil
   "Using Docker container for kiwix-serve or not?"
   :type 'boolean
-  :safe #'booleanp
-  :group 'kiwix-mode)
+  :safe #'booleanp)
 
 (defcustom kiwix-server-port 8000
   "Specify default kiwix-serve server port."
   :type 'number
-  :safe #'numberp
-  :group 'kiwix-mode)
+  :safe #'numberp)
 
 (defcustom kiwix-server-url (format "http://127.0.0.1:%s" kiwix-server-port)
   "Specify Kiwix server URL."
-  :type 'string
-  :group 'kiwix-mode)
+  :type 'string)
 
 (defcustom kiwix-server-command
   (cond
@@ -89,8 +86,7 @@
    ((string-equal system-type "windows-nt")
     (warn "You need to specify Windows Kiwix path. And send a PR to my repo.")))
   "Specify kiwix server command."
-  :type 'string
-  :group 'kiwix-mode)
+  :type 'string)
 
 (defun kiwix-dir-detect ()
   "Detect Kiwix profile directory exist."
@@ -104,30 +100,26 @@
     (car (directory-files
           (concat (getenv "HOME") "/.www.kiwix.org/kiwix") nil ".*\\.default")))
   "Specify the default Kiwix data profile path."
-  :type 'string
-  :group 'kiwix-mode)
+  :type 'string)
 
 (defcustom kiwix-default-data-path
   (when (kiwix-dir-detect)
     (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
   "Specify the default Kiwix data path."
   :type 'string
-  :safe #'stringp
-  :group 'kiwix-mode)
+  :safe #'stringp)
 
 (defcustom kiwix-default-library-path
   (file-name-directory (concat kiwix-default-data-path "/data/library/library.xml"))
   "Kiwix libraries path."
   :type 'string
-  :safe #'stringp
-  :group 'kiwix-mode)
+  :safe #'stringp)
 
 (defcustom kiwix-default-completing-read (cond ((fboundp 'ivy-read) 'ivy)
                                                ((fboundp 'helm) 'helm))
   "Kiwix default completion frontend. Currently Ivy ('ivy) and Helm ('helm) both supported."
   :type 'symbol
-  :safe #'symbolp
-  :group 'kiwix-mode)
+  :safe #'symbolp)
 
 (defcustom kiwix-default-browser-function browse-url-browser-function
   "Set default browser for open kiwix query result URL."
@@ -139,8 +131,7 @@
           (const :tag "Google Chrome web browser" browse-url-chrome)
           (const :tag "Conkeror web browser" browse-url-conkeror)
           (const :tag "xwidget browser" xwidget-webkit-browse-url))
-  :safe #'symbolp
-  :group 'kiwix-mode)
+  :safe #'symbolp)
 
 ;;;###autoload
 (defun kiwix--get-library-name (file)
@@ -179,13 +170,11 @@ Like in function `kiwix-ajax-search-hints'.")
 (defcustom kiwix-default-library "wikipedia_en_all.zim"
   "The default kiwix library when library fragment in link not specified."
   :type 'string
-  :safe #'stringp
-  :group 'kiwix-mode)
+  :safe #'stringp)
 
 (defcustom kiwix-mode-prefix nil
   "Specify kiwix-mode keybinding prefix before loading."
-  :type 'kbd
-  :group 'kiwix-mode)
+  :type 'kbd)
 
 ;; update kiwix server url and port
 (defun kiwix-server-url-update ()
