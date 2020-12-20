@@ -90,21 +90,20 @@
 
 (defun kiwix-dir-detect ()
   "Detect Kiwix profile directory exist."
-  (let ((kiwix-dir (concat (getenv "HOME") "/.www.kiwix.org/kiwix")))
+  (let ((kiwix-dir "~/.www.kiwix.org/kiwix"))
     (if (and (file-directory-p kiwix-dir) (file-readable-p kiwix-dir))
         kiwix-dir
       (warn "ERROR: Kiwix profile directory \"~/.www.kiwix.org/kiwix\" is not accessible."))))
 
 (defcustom kiwix-default-data-profile-name
   (when (kiwix-dir-detect)
-    (car (directory-files
-          (concat (getenv "HOME") "/.www.kiwix.org/kiwix") nil ".*\\.default")))
+    (car (directory-files "~/.www.kiwix.org/kiwix" nil ".*\\.default")))
   "Specify the default Kiwix data profile path."
   :type 'string)
 
 (defcustom kiwix-default-data-path
   (when (kiwix-dir-detect)
-    (concat (getenv "HOME") "/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
+    (concat "~/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
   "Specify the default Kiwix data path."
   :type 'string
   :safe #'stringp)
