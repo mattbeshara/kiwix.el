@@ -144,7 +144,7 @@
                            :store #'org-wikipedia-store-link
                            :export #'org-wikipedia-export-link
                            :complete #'org-wikipedia-complete-link)
-  (add-hook 'org-store-link-functions 'org-wikipedia-store-link t))
+  (add-hook 'org-store-link-functions 'org-wikipedia-store-link))
 
 
 
