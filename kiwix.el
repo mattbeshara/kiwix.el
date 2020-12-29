@@ -261,14 +261,21 @@ list and return a list result."
            (data (request-response-data
                   (let ((inhibit-message t))
                     (request ajax-url
-                      :type "GET"
-                      :sync t
-                      :headers '(("Content-Type" . "application/json"))
-                      :parser #'json-read
-                      :success (cl-function
-                                (lambda (&key data &allow-other-keys)
-                                  data)))))))
+                             :type "GET"
+                             :sync t
+                             :headers '(("Content-Type" . "application/json"))
+                             :parser #'json-read
+                             :success (cl-function
+                                       (lambda (&key data &allow-other-keys)
+                                         data)))))))
       (if (vectorp data) (mapcar 'cdar data)))))
+
+(defun kiwix--get-thing-at-point ()
+  "Get region select text or symbol at point."
+  (if mark-active
+      (buffer-substring
+       (region-beginning) (region-end))
+    (thing-at-point 'symbol)))
 
 ;;;###autoload
 (defun kiwix-at-point ()
@@ -287,7 +294,7 @@ list and return a list result."
                                          `(lambda (input)
                                             (apply 'kiwix-ajax-search-hints
                                                    input `(,kiwix--selected-library))))
-                               :input (word-at-point)
+                               :input (kiwix--get-thing-at-point)
                                :buffer "*helm kiwix completion candidates*"))
                         ('ivy
                          (ivy-read "Kiwix related entries: "
@@ -296,10 +303,7 @@ list and return a list result."
                                              input `(,kiwix--selected-library)))
                                    :predicate nil
                                    :require-match nil
-                                   :initial-input (if mark-active
-                                                      (buffer-substring
-                                                       (region-beginning) (region-end))
-                                                    (thing-at-point 'symbol))
+                                   :initial-input (kiwix--get-thing-at-point)
                                    :preselect nil
                                    :def nil
                                    :history nil
