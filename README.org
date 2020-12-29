@@ -11,6 +11,13 @@ This =kiwix.el= supports query =kiwix-tools='s =kiwix-serve= server through URL 
 The =kiwix-serve= server can be started from command-line if you have =kiwix-tools=
 installed, or from Docker container [fn:1].
 
+* License & Contribution
+
+This kiwix.el is under GPLv3 license. If you want to contribute or Pull Request,
+you need to have signed FSF copyright paper. Here is the start
+
+https://www.gnu.org/prep/maintain/maintain.html#Copyright-Papers
+
 * Install
 
 ** Install Kiwix
