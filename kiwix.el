@@ -8,7 +8,7 @@
 ;; Keywords: kiwix wikipedia
 ;; URL: https://github.com/stardiviner/kiwix.el
 ;; Created: 23th July 2016
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; Package-Requires: ((emacs "24.4") (request "0.3.0"))
 
 ;; This file is part of GNU Emacs.
