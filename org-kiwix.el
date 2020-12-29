@@ -1,6 +1,6 @@
 ;;; org-kiwix.el --- Org Mode link support -*- lexical-binding: t; -*-
 
-;;; Time-stamp: <2020-12-17 08:02:31 stardiviner>
+;;; Time-stamp: <2020-12-29 17:34:08 stardiviner>
 
 ;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
 
@@ -56,7 +56,6 @@
       t
     nil))
 
-;;;###autoload
 (defun kiwix-org-get-library (link)
   "Get library from Org-mode `LINK'."
   (let ((library (catch 'args-out-of-range
@@ -71,7 +70,6 @@
           (kiwix-select-library "en"))
          (t (kiwix-select-library))))))
 
-;;;###autoload
 (defun org-wikipedia-open-link (link)
   "Open LINK in external Wikipedia program."
   ;; The regexp: (library):query
@@ -100,7 +98,6 @@
     ;; (prin1 (format "library: %s, query: %s, url: %s" library query url))
     (browse-url url)))
 
-;;;###autoload
 (defun org-wikipedia-export-link (link description format)
   "Export the Wikipedia LINK with DESCRIPTION for FORMAT from Org files."
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)" link)
@@ -117,7 +114,6 @@
          ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
          (t path))))))
 
-;;;###autoload
 (defun org-wikipedia-store-link ()
   "Store a link to a Wikipedia link."
   ;; [C-c o C-l l] `org-store-link'
@@ -131,7 +127,6 @@
                             :description query)
       link)))
 
-;;;###autoload
 (defun org-wikipedia-complete-link (&optional arg)
   "Use kiwix AJAX request to provide available completion keywords."
   (let* ((query (or arg (read-from-minibuffer "Search keyword: ")))

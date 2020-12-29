@@ -132,7 +132,6 @@
           (const :tag "xwidget browser" xwidget-webkit-browse-url))
   :safe #'symbolp)
 
-;;;###autoload
 (defun kiwix--get-library-name (file)
   "Extract library name from library file."
   (replace-regexp-in-string "\\.zim\\'" "" file))
