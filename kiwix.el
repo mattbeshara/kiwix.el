@@ -32,7 +32,7 @@
 
 ;;;; Kiwix installation
 ;;
-;; http://www.kiwix.org
+;; https://github.com/stardiviner/kiwix.el/#install
 
 ;;;; Config:
 ;;
