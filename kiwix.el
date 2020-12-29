@@ -28,7 +28,7 @@
 
 ;;; Commentary:
 
-;;; This currently only works for Linux, not tested for Mac OS X and Windows.
+;;; This currently only works for GNU/Linux, not tested for Mac OS X and Windows.
 
 ;;;; Kiwix installation
 ;;
@@ -93,7 +93,8 @@
   (let ((kiwix-dir "~/.www.kiwix.org/kiwix"))
     (if (and (file-directory-p kiwix-dir) (file-readable-p kiwix-dir))
         kiwix-dir
-      (warn "ERROR: Kiwix profile directory \"~/.www.kiwix.org/kiwix\" is not accessible."))))
+      (warn "ERROR: Kiwix profile directory \"~/.www.kiwix.org/kiwix\" is not accessible.")
+      nil)))
 
 (defcustom kiwix-default-data-profile-name
   (when (kiwix-dir-detect)
@@ -116,7 +117,8 @@
 
 (defcustom kiwix-default-completing-read (cond ((fboundp 'ivy-read) 'ivy)
                                                ((fboundp 'helm) 'helm))
-  "Kiwix default completion frontend. Currently Ivy ('ivy) and Helm ('helm) both supported."
+  "Kiwix default completion frontend.
+Currently Ivy ('ivy) and Helm ('helm) both supported."
   :type 'symbol
   :safe #'symbolp)
 
@@ -260,14 +262,14 @@ list and return a list result."
            (data (request-response-data
                   (let ((inhibit-message t))
                     (request ajax-url
-                             :type "GET"
-                             :sync t
-                             :headers '(("Content-Type" . "application/json"))
-                             :parser #'json-read
-                             :success (cl-function
-                                       (lambda (&key data &allow-other-keys)
-                                         data)))))))
-      (if (vectorp data) (mapcar 'cdar data)))))
+                      :type "GET"
+                      :sync t
+                      :headers '(("Content-Type" . "application/json"))
+                      :parser #'json-read
+                      :success (cl-function
+                                (lambda (&key data &allow-other-keys)
+                                  data)))))))
+      (if (vectorp data) (mapcar #'cdar data)))))
 
 (defun kiwix--get-thing-at-point ()
   "Get region select text or symbol at point."
@@ -286,20 +288,20 @@ list and return a list result."
       (progn
         (setq kiwix--selected-library (kiwix-select-library))
         (let* ((library kiwix--selected-library)
-               (query (cl-case kiwix-default-completing-read
+               (query (pcase kiwix-default-completing-read
                         ('helm
                          (helm :source (helm-build-async-source "kiwix-helm-search-hints"
                                          :candidates-process
-                                         `(lambda (input)
-                                            (apply 'kiwix-ajax-search-hints
-                                                   input `(,kiwix--selected-library))))
+                                         (lambda (input)
+                                           (apply #'kiwix-ajax-search-hints
+                                                  input `(,kiwix--selected-library))))
                                :input (kiwix--get-thing-at-point)
                                :buffer "*helm kiwix completion candidates*"))
                         ('ivy
                          (ivy-read "Kiwix related entries: "
-                                   `(lambda (input)
-                                      (apply 'kiwix-ajax-search-hints
-                                             input `(,kiwix--selected-library)))
+                                   (lambda (input)
+                                     (apply #'kiwix-ajax-search-hints
+                                            input `(,kiwix--selected-library)))
                                    :predicate nil
                                    :require-match nil
                                    :initial-input (kiwix--get-thing-at-point)
@@ -339,12 +341,8 @@ list and return a list result."
 ;;;###autoload
 (define-minor-mode kiwix-mode
   "Kiwix global minor mode for searching Kiwix serve."
-  :require 'kiwix-mode
-  :init-value nil
   :global t
   :lighter " Kiwix"
-  :group 'kiwix-mode
-  :keymap kiwix-mode-map
   (if kiwix-mode (kiwix-mode-enable) (kiwix-mode-disable)))
 
 

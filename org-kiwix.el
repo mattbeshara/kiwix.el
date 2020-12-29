@@ -1,6 +1,6 @@
 ;;; org-kiwix.el --- Org Mode link support -*- lexical-binding: t; -*-
 
-;;; Time-stamp: <2020-12-29 17:34:08 stardiviner>
+;;; Time-stamp: <2020-12-29 17:50:34 stardiviner>
 
 ;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
 
@@ -21,7 +21,7 @@
 
 ;;; Commentary:
 
-;;; Support Org-mode
+;; Support Org-mode
 ;;
 ;; - [[wikipedia:(library):query]]
 ;; - [[wikipedia:query]]
