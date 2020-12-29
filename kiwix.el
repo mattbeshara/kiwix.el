@@ -135,7 +135,7 @@
 ;;;###autoload
 (defun kiwix--get-library-name (file)
   "Extract library name from library file."
-  (replace-regexp-in-string "\.zim" "" file))
+  (replace-regexp-in-string "\\.zim\\'" "" file))
 
 (defun kiwix-get-libraries ()
   "Check out all available Kiwix libraries."
