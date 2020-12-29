@@ -290,6 +290,7 @@ list and return a list result."
         (let* ((library kiwix--selected-library)
                (query (pcase kiwix-default-completing-read
                         ('helm
+                         (require 'helm)
                          (helm :source (helm-build-async-source "kiwix-helm-search-hints"
                                          :candidates-process
                                          (lambda (input)
@@ -298,6 +299,7 @@ list and return a list result."
                                :input (kiwix--get-thing-at-point)
                                :buffer "*helm kiwix completion candidates*"))
                         ('ivy
+                         (require 'ivy)
                          (ivy-read "Kiwix related entries: "
                                    (lambda (input)
                                      (apply #'kiwix-ajax-search-hints
