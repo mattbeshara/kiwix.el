@@ -1,3 +1,7 @@
+<a href="https://cla-assistant.io/stardiviner/kiwix.el"><img
+src="https://cla-assistant.io/readme/badge/stardiviner/kiwix.el" alt="CLA
+assistant" /></a>
+
 * Intro
 
 Searching offline Wikipedia through Kiwix.
