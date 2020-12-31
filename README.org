@@ -83,7 +83,12 @@ https://addons.mozilla.org/en-US/firefox/addon/kiwix-offline/
 
 https://chrome.google.com/webstore/detail/kiwix/donaljnlmapmngakoipdmehbfcioahhk
 
-** MELPA
+** GNU ELPA & MELPA
+
+kiwix.el now is available on GNU ELPA & MELPA.
+
+- https://elpa.gnu.org/packages/kiwix.html
+- https://melpa.org/#/kiwix
 
 #+begin_src emacs-lisp :eval no
 (use-package kiwix
