@@ -1,0 +1,2 @@
+- name: CLA assistant lite
+  uses: cla-assistant/github-action@v2.0.2-alpha
