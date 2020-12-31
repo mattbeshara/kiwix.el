@@ -1,0 +1,2 @@
+- name: Emacs Lisp check
+  uses: leotaku/elisp-check@v1.1
