@@ -19,5 +19,5 @@ jobs:
       with:
           check: melpa
           file: '*.el'
-          ignore_warnings: false
+          ignore_warnings: true
           warnings_as_errors: false
