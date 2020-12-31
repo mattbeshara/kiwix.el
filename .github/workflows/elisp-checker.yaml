@@ -1,4 +1,4 @@
-name: Emacs Lisp check
+name: "Emacs Lisp check"
 
 on: [push, pull_request]
 
@@ -8,15 +8,16 @@ jobs:
     strategy:
       matrix:
         emacs_version:
-          - 25.1
-          - 25.3
-          - 26.1
           - 26.3
           - snapshot
     steps:
+    - uses: actions/checkout@v2
     - uses: purcell/setup-emacs@master
       with:
         version: ${{ matrix.emacs_version }}
-    - uses: leotaku/elisp-check@v1.1
+    - uses: leotaku/elisp-check@master
       with:
-          file: kiwix.el org-kiwix.el
+          check: melpa
+          file: '*.el'
+          ignore_warnings: false
+          warnings_as_errors: false
