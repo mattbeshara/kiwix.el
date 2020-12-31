@@ -59,6 +59,11 @@
 (require 'thingatpt)
 (require 'json)
 
+(declare-function helm "helm")
+(declare-function helm-build-async-source "helm")
+(declare-function ivy-read "ivy")
+
+
 (defgroup kiwix-mode nil
   "Kiwix customization options."
   :group 'kiwix-mode)
@@ -133,10 +138,6 @@ Currently Ivy ('ivy) and Helm ('helm) both supported."
           (const :tag "Conkeror web browser" browse-url-conkeror)
           (const :tag "xwidget browser" xwidget-webkit-browse-url))
   :safe #'symbolp)
-
-(declare-function helm "helm")
-(declare-function helm-build-async-source "helm")
-(declare-function ivy-read "ivy")
 
 (defun kiwix--get-library-name (file)
   "Extract library name from library file."
