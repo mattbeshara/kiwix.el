@@ -190,20 +190,24 @@ Like in function `kiwix-ajax-search-hints'.")
 (defun kiwix-launch-server ()
   "Launch Kiwix server."
   (interactive)
-  (let ((library-option "--library ")
-        (port (concat "--port=" kiwix-server-port " "))
-        (daemon "--daemon ")
-        (library-path kiwix-default-library-dir))
+  (let ((library-path kiwix-default-library-dir))
     (if kiwix-server-use-docker
-        (async-shell-command
-         (concat "docker container run -d "
-                 "--name kiwix-serve "
-                 "-v " (file-name-directory library-path) ":" "/data "
-                 "kiwix/kiwix-serve "
-                 "--library library.xml"))
-      (async-shell-command
-       (concat kiwix-server-command
-               library-option port daemon (shell-quote-argument library-path))))))
+        (start-process
+         "kiwix-server"
+         " *kiwix server*"
+         "docker"
+         "container" "run" "-d"
+         "--name" "kiwix-serve"
+         "-v" (concat (file-name-directory library-path) ":" "/data")
+         "kiwix/kiwix-serve"
+         "--library" "library.xml")
+      (start-process
+       "kiwix-server"
+       " *kiwix server*"
+       kiwix-server-command
+       "--port" kiwix-server-port
+       "--daemon"
+       "--library" (concat library-path "library.xml")))))
 
 (defun kiwix-capitalize-first (string)
   "Only capitalize the first word of STRING."
