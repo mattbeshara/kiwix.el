@@ -122,7 +122,7 @@
 (defcustom kiwix-default-completing-read (cond ((fboundp 'ivy-read) 'ivy)
                                                ((fboundp 'helm) 'helm))
   "Kiwix default completion frontend.
-Currently Ivy ('ivy) and Helm ('helm) both supported."
+Currently Ivy (`ivy') and Helm (`helm') both supported."
   :type 'symbol
   :safe #'symbolp)
 
