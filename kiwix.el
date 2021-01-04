@@ -102,7 +102,7 @@
 
 (defcustom kiwix-default-data-profile-name
   (when (kiwix-dir-detect)
-    (car (directory-files "~/.www.kiwix.org/kiwix" nil ".*\\.default")))
+    (car (directory-files "~/.www.kiwix.org/kiwix" nil ".*\\.default\\'")))
   "Specify the default Kiwix data profile path."
   :type 'string)
 
@@ -146,7 +146,7 @@ Currently Ivy (`ivy') and Helm (`helm') both supported."
   "Check out all available Kiwix libraries."
   (when (kiwix-dir-detect)
     (mapcar #'kiwix--get-library-name
-            (directory-files kiwix-default-library-dir nil ".*\.zim"))))
+            (directory-files kiwix-default-library-dir nil ".*\\.zim\\'"))))
 
 (defvar kiwix-libraries (kiwix-get-libraries)
   "A list of Kiwix libraries.")
