@@ -235,9 +235,9 @@ In order to fix user config setting port after kiwix already initialized."
 
 (defun kiwix-ping-server ()
   "Ping Kiwix server to set `kiwix-server-available?' global state variable."
-  (when kiwix-server-use-docker
-    (unless (kiwix-docker-check)
-      (async-shell-command "docker pull kiwix/kiwix-serve")))
+  (and kiwix-server-use-docker
+       (or (kiwix-docker-check)
+           (async-shell-command "docker pull kiwix/kiwix-serve")))
   (let ((inhibit-message t))
     (kiwix-server-url-update)
     (request kiwix-server-url
