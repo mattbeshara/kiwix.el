@@ -39,7 +39,6 @@
 ;; (use-package kiwix
 ;;   :ensure t
 ;;   :after org
-;;   :commands (kiwix-launch-server kiwix-at-point)
 ;;   :bind (:map document-prefix ("w" . kiwix-at-point))
 ;;   :init (setq kiwix-server-use-docker t
 ;;               kiwix-server-port 8080
