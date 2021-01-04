@@ -106,15 +106,15 @@
   "Specify the default Kiwix data profile path."
   :type 'string)
 
-(defcustom kiwix-default-data-path
+(defcustom kiwix-default-data-dir
   (when (kiwix-dir-detect)
     (concat "~/.www.kiwix.org/kiwix/" kiwix-default-data-profile-name))
-  "Specify the default Kiwix data path."
+  "Specify the default Kiwix data directory."
   :type 'string
   :safe #'stringp)
 
-(defcustom kiwix-default-library-path
-  (file-name-directory (concat kiwix-default-data-path "/data/library/library.xml"))
+(defcustom kiwix-default-library-dir
+  (file-name-directory (concat kiwix-default-data-dir "/data/library/library.xml"))
   "Kiwix libraries path."
   :type 'string
   :safe #'stringp)
@@ -146,7 +146,7 @@ Currently Ivy ('ivy) and Helm ('helm) both supported."
   "Check out all available Kiwix libraries."
   (when (kiwix-dir-detect)
     (mapcar #'kiwix--get-library-name
-            (directory-files kiwix-default-library-path nil ".*\.zim"))))
+            (directory-files kiwix-default-library-dir nil ".*\.zim"))))
 
 (defvar kiwix-libraries (kiwix-get-libraries)
   "A list of Kiwix libraries.")
@@ -193,7 +193,7 @@ Like in function `kiwix-ajax-search-hints'.")
   (let ((library-option "--library ")
         (port (concat "--port=" kiwix-server-port " "))
         (daemon "--daemon ")
-        (library-path kiwix-default-library-path))
+        (library-path kiwix-default-library-dir))
     (if kiwix-server-use-docker
         (async-shell-command
          (concat "docker container run -d "
