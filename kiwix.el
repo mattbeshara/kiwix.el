@@ -282,7 +282,7 @@ list and return a list result."
 
 (defun kiwix--get-thing-at-point ()
   "Get region select text or symbol at point."
-  (if mark-active
+  (if (use-region-p)
       (buffer-substring
        (region-beginning) (region-end))
     (thing-at-point 'symbol)))
