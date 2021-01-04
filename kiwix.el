@@ -182,7 +182,8 @@ Like in function `kiwix-ajax-search-hints'.")
 
 ;; update kiwix server url and port
 (defun kiwix-server-url-update ()
-  "Update `kiwix-server-url' everytime used. In case setting port is lated."
+  "Update `kiwix-server-url' everytime used.
+In order to fix user config setting port after kiwix already initialized."
   (setq kiwix-server-url (format "http://127.0.0.1:%s" kiwix-server-port)))
 
 ;; launch Kiwix server
