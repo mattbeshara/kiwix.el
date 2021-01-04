@@ -120,9 +120,11 @@
   :safe #'stringp)
 
 (defcustom kiwix-default-completing-read (cond ((fboundp 'ivy-read) 'ivy)
-                                               ((fboundp 'helm) 'helm))
+                                               ((fboundp 'helm) 'helm)
+                                               (t t))
   "Kiwix default completion frontend.
-Currently Ivy (`ivy') and Helm (`helm') both supported."
+Currently Ivy (`ivy') and Helm (`helm') both supported.
+Set it to ‘t’ will use Emacs built-in ‘completing-read’."
   :type 'symbol
   :safe #'symbolp)
 
@@ -323,7 +325,17 @@ list and return a list result."
                                    :update-fn 'auto
                                    :sort t
                                    :dynamic-collection t
-                                   :caller 'ivy-done)))))
+                                   :caller 'ivy-done))
+                        (_
+                         (completing-read
+                          "Kiwix related entries: "
+                          ;; FIXME: This needs work!
+                          (completion-table-dynamic
+                           (lambda (input)
+                             (apply #'kiwix-ajax-search-hints
+                                    input `(,kiwix--selected-library))))
+                          nil nil
+                          (kiwix--get-thing-at-point))))))
           (message (format "library: %s, query: %s" library query))
           (if (or (null library)
                   (string-empty-p library)
