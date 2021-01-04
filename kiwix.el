@@ -83,11 +83,11 @@
 
 (defcustom kiwix-server-command
   (cond
-   ((string-equal system-type "gnu/linux")
-    "/usr/lib/kiwix/bin/kiwix-serve ")
-   ((string-equal system-type "darwin")
+   ((file-executable-p "/usr/bin/kiwix-serve") "/usr/bin/kiwix-serve")
+   ((eq system-type 'gnu/linux) "/usr/lib/kiwix/bin/kiwix-serve")
+   ((eq system-type 'darwin)
     (warn "You need to specify Mac OS X Kiwix path. And send a PR to my repo."))
-   ((string-equal system-type "windows-nt")
+   ((eq system-type 'windows-nt)
     (warn "You need to specify Windows Kiwix path. And send a PR to my repo.")))
   "Specify kiwix server command."
   :type 'string)
