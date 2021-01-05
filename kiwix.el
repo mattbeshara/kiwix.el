@@ -182,11 +182,6 @@ Like in function `kiwix-ajax-search-hints'.")
   "Specify kiwix-mode keybinding prefix before loading."
   :type 'kbd)
 
-;; update kiwix server url and port
-(defun kiwix-server-url-update ()
-  "Update `kiwix-server-url' everytime used.
-In order to fix user config setting port after kiwix already initialized."
-  (setq kiwix-server-url (format "http://127.0.0.1:%s" kiwix-server-port)))
 
 ;; launch Kiwix server
 ;;;###autoload
@@ -218,7 +213,6 @@ In order to fix user config setting port after kiwix already initialized."
 
 (defun kiwix-query (query &optional selected-library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
-  (kiwix-server-url-update)
   (let* ((library (or selected-library (kiwix--get-library-name kiwix-default-library)))
          (url (concat kiwix-server-url "/search?content=" library "&pattern=" (url-hexify-string query)))
          (browse-url-browser-function kiwix-default-browser-function))
@@ -241,7 +235,6 @@ In order to fix user config setting port after kiwix already initialized."
        (or (kiwix-docker-check)
            (async-shell-command "docker pull kiwix/kiwix-serve")))
   (let ((inhibit-message t))
-    (kiwix-server-url-update)
     (request kiwix-server-url
       :type "GET"
       :sync t
@@ -260,7 +253,6 @@ In order to fix user config setting port after kiwix already initialized."
 (defun kiwix-ajax-search-hints (input &optional selected-library)
   "Instantly AJAX request to get available Kiwix entry keywords
 list and return a list result."
-  (kiwix-server-url-update)
   (kiwix-ping-server)
   (when (and input kiwix-server-available?)
     (let* ((library (or selected-library
