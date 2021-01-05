@@ -77,7 +77,7 @@
   :type 'number
   :safe #'numberp)
 
-(defcustom kiwix-server-url (format "http://127.0.0.1:%s" kiwix-server-port)
+(defcustom kiwix-server-url "http://127.0.0.1"
   "Specify Kiwix server URL."
   :type 'string)
 
@@ -203,7 +203,7 @@ Like in function `kiwix-ajax-search-hints'.")
        "kiwix-server"
        " *kiwix server*"
        kiwix-server-command
-       "--port" kiwix-server-port
+       "--port" (number-to-string kiwix-server-port)
        "--daemon"
        "--library" (concat library-path "library.xml")))))
 
@@ -214,7 +214,8 @@ Like in function `kiwix-ajax-search-hints'.")
 (defun kiwix-query (query &optional selected-library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
   (let* ((library (or selected-library (kiwix--get-library-name kiwix-default-library)))
-         (url (concat kiwix-server-url "/search?content=" library "&pattern=" (url-hexify-string query)))
+         (url (concat (format "%s:%s" kiwix-server-url (number-to-string kiwix-server-port))
+                      "/search?content=" library "&pattern=" (url-hexify-string query)))
          (browse-url-browser-function kiwix-default-browser-function))
     (browse-url url)))
 
@@ -235,7 +236,7 @@ Like in function `kiwix-ajax-search-hints'.")
        (or (kiwix-docker-check)
            (async-shell-command "docker pull kiwix/kiwix-serve")))
   (let ((inhibit-message t))
-    (request kiwix-server-url
+    (request (format "%s:%s" kiwix-server-url (number-to-string kiwix-server-port))
       :type "GET"
       :sync t
       :parser (lambda () (libxml-parse-html-region (point-min) (point-max)))
@@ -258,8 +259,8 @@ list and return a list result."
     (let* ((library (or selected-library
                         (kiwix--get-library-name (or kiwix--selected-library
                                                      kiwix-default-library))))
-           (ajax-api (format "%s/suggest?content=%s&term="
-                             kiwix-server-url
+           (ajax-api (format "%s:%s/suggest?content=%s&term="
+                             kiwix-server-url (number-to-string kiwix-server-port)
                              library))
            (ajax-url (concat ajax-api input))
            (data (request-response-data
