@@ -1,13 +1,13 @@
 ;;; org-kiwix.el --- Org Mode link support -*- lexical-binding: t; -*-
 
-;;; Time-stamp: <2021-01-14 02:12:45 stardiviner>
+;;; Time-stamp: <2021-01-14 02:14:33 stardiviner>
 
 ;; Author: stardiviner <numbchild@gmail.com>
 ;; Maintainer: stardiviner <numbchild@gmail.com>
 ;; Keywords: kiwix wikipedia
 ;; Homepage: https://github.com/stardiviner/kiwix.el
 ;; Created: 23th July 2016
-;; Version: 1.0.2
+;; Version: 1.0.3
 ;; Package-Requires: ((emacs "24.3"))
 
 ;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
