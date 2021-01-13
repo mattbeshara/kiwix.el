@@ -1,15 +1,15 @@
 ;;; kiwix.el --- Searching offline Wikipedia through Kiwix.  -*- lexical-binding: t; -*-
 ;; -*- coding: utf-8 -*-
 
-;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
-
 ;; Author: stardiviner <numbchild@gmail.com>
 ;; Maintainer: stardiviner <numbchild@gmail.com>
 ;; Keywords: kiwix wikipedia
 ;; Homepage: https://github.com/stardiviner/kiwix.el
 ;; Created: 23th July 2016
-;; Version: 1.0.1
+;; Version: 1.0.2
 ;; Package-Requires: ((emacs "24.4") (request "0.3.0"))
+
+;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
 
 ;; This file is part of GNU Emacs.
 
