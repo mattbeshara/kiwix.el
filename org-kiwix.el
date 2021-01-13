@@ -1,6 +1,6 @@
 ;;; org-kiwix.el --- Org Mode link support -*- lexical-binding: t; -*-
 
-;;; Time-stamp: <2021-01-14 02:08:34 stardiviner>
+;;; Time-stamp: <2021-01-14 02:09:40 stardiviner>
 
 ;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
 
@@ -56,7 +56,7 @@
       t
     nil))
 
-(defun kiwix-org-get-library (link)
+(defun org-kiwix-get-library (link)
   "Get library from Org-mode `LINK'."
   (let ((library (catch 'args-out-of-range
                    (when (string-match "(\\([^)].*\\)):\\(.*\\)" link)
@@ -77,7 +77,7 @@
   ;; match link spec: "(library):query" with regexp "([^).]*):?:.*"
   ;; (string-match "\\(?:(\\(.*\\)):\\)?\\([^]\n\t\r]*\\)"  link)
   (string-match "(\\([^)].*\\)):\\(.*\\)" link)
-  (let* ((library (kiwix-org-get-library link))
+  (let* ((library (org-kiwix-get-library link))
          (query (cond
                  ((org-kiwix--chinese-string-p link) link)
                  ((string-match-p "(\\([^)].*\\)):\\(.*\\)" link)
@@ -101,7 +101,7 @@
 (defun org-wikipedia-export-link (link description format)
   "Export the Wikipedia LINK with DESCRIPTION for FORMAT from Org files."
   (when (string-match "\\(?:(\\(.*\\)):\\)?\\([^] \n\t\r]*\\)" link)
-    (let* ((library (kiwix-org-get-library link))
+    (let* ((library (org-kiwix-get-library link))
            (query (url-encode-url (or (match-string 2 link) description)))
            ;; "http://en.wikipedia.org/wiki/Linux"
            ;;         --
