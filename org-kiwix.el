@@ -1,6 +1,6 @@
 ;;; org-kiwix.el --- Org Mode link support -*- lexical-binding: t; -*-
 
-;;; Time-stamp: <2020-12-29 17:50:34 stardiviner>
+;;; Time-stamp: <2021-01-14 02:08:34 stardiviner>
 
 ;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
 
@@ -50,7 +50,7 @@
 (autoload 'org-link-set-parameters "org")
 (autoload 'org-store-link-props "org")
 
-(defun chinese-string-p (string)
+(defun org-kiwix--chinese-string-p (string)
   "Return t if STRING is a Chinese string."
   (if (string-match (format "\\cC\\{%s\\}" (length string)) string)
       t
@@ -63,7 +63,7 @@
                      (match-string 1 link)))))
     (or library
         (cond
-         ((chinese-string-p link)
+         ((org-kiwix--chinese-string-p link)
           (kiwix-select-library "zh"))
          ((string-match-p "[a-zA-Z\ ]+" link)
           ;; convert between libraries full name and abbrev.
@@ -79,7 +79,7 @@
   (string-match "(\\([^)].*\\)):\\(.*\\)" link)
   (let* ((library (kiwix-org-get-library link))
          (query (cond
-                 ((chinese-string-p link) link)
+                 ((org-kiwix--chinese-string-p link) link)
                  ((string-match-p "(\\([^)].*\\)):\\(.*\\)" link)
                   (match-string 2 link))
                  (t link)))
