@@ -63,9 +63,9 @@
 (declare-function ivy-read "ivy")
 
 
-(defgroup kiwix-mode nil
+(defgroup kiwix nil
   "Kiwix customization options."
-  :group 'kiwix-mode)
+  :group 'kiwix)
 
 (defcustom kiwix-server-use-docker nil
   "Using Docker container for kiwix-serve or not?"
