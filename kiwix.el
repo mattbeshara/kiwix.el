@@ -119,11 +119,13 @@
   :type 'string
   :safe #'stringp)
 
-(defcustom kiwix-default-completing-read (cond ((fboundp 'ivy-read) 'ivy)
-                                               ((fboundp 'helm) 'helm)
-                                               (t t))
+(defcustom kiwix-default-completing-read (cond
+                                          ((fboundp 'selectrum-read) 'selectrum)
+                                          ((fboundp 'ivy-read) 'ivy)
+                                          ((fboundp 'helm) 'helm)
+                                          (t t))
   "Kiwix default completion frontend.
-Currently Ivy (`ivy') and Helm (`helm') both supported.
+Currently `selectrum', Ivy (`ivy') and Helm (`helm') all supported.
 Set it to ‘t’ will use Emacs built-in ‘completing-read’."
   :type 'symbol
   :safe #'symbolp)
@@ -293,32 +295,42 @@ list and return a list result."
         (setq kiwix--selected-library (kiwix-select-library))
         (let* ((library kiwix--selected-library)
                (query (pcase kiwix-default-completing-read
-                        ('helm
-                         (require 'helm)
-                         (helm :source (helm-build-async-source "kiwix-helm-search-hints"
-                                         :candidates-process
-                                         (lambda (input)
-                                           (apply #'kiwix-ajax-search-hints
-                                                  input `(,kiwix--selected-library))))
-                               :input (kiwix--get-thing-at-point)
-                               :buffer "*helm kiwix completion candidates*"))
+                        ('selectrum
+                         (require 'selectrum)
+                         (selectrum-read
+                          "Kiwix related entries: "
+                          (lambda (input)
+                            (apply #'kiwix-ajax-search-hints
+                                   input `(,kiwix--selected-library)))
+                          :require-match nil))
                         ('ivy
                          (require 'ivy)
-                         (ivy-read "Kiwix related entries: "
-                                   (lambda (input)
-                                     (apply #'kiwix-ajax-search-hints
-                                            input `(,kiwix--selected-library)))
-                                   :predicate nil
-                                   :require-match nil
-                                   :initial-input (kiwix--get-thing-at-point)
-                                   :preselect nil
-                                   :def nil
-                                   :history nil
-                                   :keymap nil
-                                   :update-fn 'auto
-                                   :sort t
-                                   :dynamic-collection t
-                                   :caller 'ivy-done))
+                         (ivy-read
+                          "Kiwix related entries: "
+                          (lambda (input)
+                            (apply #'kiwix-ajax-search-hints
+                                   input `(,kiwix--selected-library)))
+                          :predicate nil
+                          :require-match nil
+                          :initial-input (kiwix--get-thing-at-point)
+                          :preselect nil
+                          :def nil
+                          :history nil
+                          :keymap nil
+                          :update-fn 'auto
+                          :sort t
+                          :dynamic-collection t
+                          :caller 'ivy-done))
+                        ('helm
+                         (require 'helm)
+                         (helm
+                          :source (helm-build-async-source "kiwix-helm-search-hints"
+                                    :candidates-process
+                                    (lambda (input)
+                                      (apply #'kiwix-ajax-search-hints
+                                             input `(,kiwix--selected-library))))
+                          :input (kiwix--get-thing-at-point)
+                          :buffer "*helm kiwix completion candidates*"))
                         (_
                          (completing-read
                           "Kiwix related entries: "
