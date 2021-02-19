@@ -120,7 +120,7 @@
   :safe #'stringp)
 
 (defcustom kiwix-default-completing-read (cond
-                                          ((fboundp 'selectrum-read) 'selectrum)
+                                          ((fboundp 'consult--read) 'selectrum)
                                           ((fboundp 'ivy-read) 'ivy)
                                           ((fboundp 'helm) 'helm)
                                           (t t))
@@ -297,11 +297,12 @@ list and return a list result."
                (query (pcase kiwix-default-completing-read
                         ('selectrum
                          (require 'selectrum)
-                         (selectrum-read
-                          "Kiwix related entries: "
+                         (require 'consult)
+                         (consult--read
                           (lambda (input)
                             (apply #'kiwix-ajax-search-hints
                                    input `(,kiwix--selected-library)))
+                          :prompt "Kiwix related entries: "
                           :require-match nil))
                         ('ivy
                          (require 'ivy)
