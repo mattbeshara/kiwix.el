@@ -67,7 +67,7 @@
   "Kiwix customization options."
   :group 'kiwix)
 
-(defcustom kiwix-server-use-docker nil
+(defcustom kiwix-server-use-docker t
   "Using Docker container for kiwix-serve or not?"
   :type 'boolean
   :safe #'booleanp)
@@ -82,13 +82,14 @@
   :type 'string)
 
 (defcustom kiwix-server-command
-  (cond
-   ((file-executable-p "/usr/bin/kiwix-serve") "/usr/bin/kiwix-serve")
-   ((eq system-type 'gnu/linux) "/usr/lib/kiwix/bin/kiwix-serve")
-   ((eq system-type 'darwin)
-    (warn "You need to specify Mac OS X Kiwix path. And send a PR to my repo."))
-   ((eq system-type 'windows-nt)
-    (warn "You need to specify Windows Kiwix path. And send a PR to my repo.")))
+  (when (null kiwix-server-use-docker)
+    (cond
+     ((file-executable-p "/usr/bin/kiwix-serve") "/usr/bin/kiwix-serve")
+     ((eq system-type 'gnu/linux) "/usr/lib/kiwix/bin/kiwix-serve")
+     ((eq system-type 'darwin)
+      (warn "You need to specify Mac OS X Kiwix path. And send a PR to my repo."))
+     ((eq system-type 'windows-nt)
+      (warn "You need to specify Windows Kiwix path. And send a PR to my repo."))))
   "Specify kiwix server command."
   :type 'string)
 
