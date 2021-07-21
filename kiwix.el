@@ -40,7 +40,7 @@
 ;;   :ensure t
 ;;   :after org
 ;;   :bind (:map document-prefix ("w" . kiwix-at-point))
-;;   :init (setq kiwix-server-use-docker t
+;;   :init (setq kiwix-server-type 'docker-local
 ;;               kiwix-server-port 8080
 ;;               kiwix-default-library "wikipedia_zh_all_2015-11.zim"))
 
@@ -67,22 +67,33 @@
   "Kiwix customization options."
   :group 'kiwix)
 
-(defcustom kiwix-server-use-docker t
-  "Using Docker container for kiwix-serve or not?"
-  :type 'boolean
-  :safe #'booleanp)
+(defcustom kiwix-zim-dir "~/.www.kiwix.org/kiwix"
+  "The kiwix ZIM files directory."
+  :type 'string
+  :safe #'stringp)
+
+(defcustom kiwix-server-type 'docker-remote
+  "Specify the kiwix-serve type.
+- remote docker service
+- local docker service
+- local kiwix-serve service"
+  :type '(choice
+          (const :tag "Remote Docker Service" docker-remote)
+          (const :tag "Local Docker Service" docker-local)
+          (const :tag "Local kiwix-serve Service" kiwix-serve-local)))
+
+(defcustom kiwix-server-url "http://127.0.0.1"
+  "Specify Kiwix server URL."
+  :type 'string
+  :safe #'stringp)
 
 (defcustom kiwix-server-port 8000
   "Specify default kiwix-serve server port."
   :type 'number
   :safe #'numberp)
 
-(defcustom kiwix-server-url "http://127.0.0.1"
-  "Specify Kiwix server URL."
-  :type 'string)
-
 (defcustom kiwix-server-command
-  (when (null kiwix-server-use-docker)
+  (when (eq kiwix-server-type 'kiwix-serve-local)
     (cond
      ((file-executable-p "/usr/bin/kiwix-serve") "/usr/bin/kiwix-serve")
      ((eq system-type 'gnu/linux) "/usr/lib/kiwix/bin/kiwix-serve")
@@ -192,23 +203,26 @@ Like in function `kiwix-ajax-search-hints'.")
   "Launch Kiwix server."
   (interactive)
   (let ((library-path kiwix-default-library-dir))
-    (if kiwix-server-use-docker
-        (start-process
-         "kiwix-server"
-         " *kiwix server*"
-         "docker"
-         "container" "run" "-d"
-         "--name" "kiwix-serve"
-         "-v" (concat (file-name-directory library-path) ":" "/data")
-         "kiwix/kiwix-serve"
-         "--library" "library.xml")
-      (start-process
-       "kiwix-server"
-       " *kiwix server*"
-       kiwix-server-command
-       "--port" (number-to-string kiwix-server-port)
-       "--daemon"
-       "--library" (concat library-path "library.xml")))))
+    (cl-case kiwix-server-type
+      ('docker-remote
+       (message "kiwix-serve service is started by user manually at other place."))
+      ('docker-local (start-process
+                      "kiwix-server"
+                      " *kiwix server*"
+                      "docker"
+                      "container" "run" "-d"
+                      "--name" "kiwix-serve"
+                      "-v" (concat (file-name-directory library-path) ":" "/data")
+                      "-p" (format "%s:80" kiwix-server-port)
+                      "kiwix/kiwix-serve"
+                      "--library" "library.xml"))
+      ('kiwix-serve-local (start-process
+                           "kiwix-server"
+                           " *kiwix server*"
+                           kiwix-server-command
+                           "--port" (number-to-string kiwix-server-port)
+                           "--daemon"
+                           "--library" (concat library-path "library.xml"))))))
 
 (defun kiwix-capitalize-first (string)
   "Only capitalize the first word of STRING."
@@ -235,7 +249,7 @@ Like in function `kiwix-ajax-search-hints'.")
 
 (defun kiwix-ping-server ()
   "Ping Kiwix server to set `kiwix-server-available?' global state variable."
-  (and kiwix-server-use-docker
+  (and (eq kiwix-server-type 'docker-local)
        (or (kiwix-docker-check)
            (async-shell-command "docker pull kiwix/kiwix-serve")))
   (let ((inhibit-message t))
