@@ -6,7 +6,7 @@
 ;; Keywords: kiwix wikipedia
 ;; Homepage: https://github.com/stardiviner/kiwix.el
 ;; Created: 23th July 2016
-;; Version: 1.0.3
+;; Version: 1.1.0
 ;; Package-Requires: ((emacs "24.4") (request "0.3.0") (elquery "0.1.0"))
 
 ;; Copyright (C) 2019-2020  Free Software Foundation, Inc.
@@ -133,22 +133,57 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
           (const :tag "xwidget browser" xwidget-webkit-browse-url))
   :safe #'symbolp)
 
+
+(defvar kiwix-libraries ()
+  "A list of Kiwix libraries.")
+
 (defun kiwix--get-library-name (file)
   "Extract library name from library file."
   (replace-regexp-in-string "\\.zim\\'" "" file))
 
 (defun kiwix-get-libraries ()
   "Check out all available Kiwix libraries."
-  (when kiwix-zim-dir
-    (mapcar #'kiwix--get-library-name
-            (directory-files kiwix-zim-dir nil ".*\\.zim\\'"))))
-
-(defvar kiwix-libraries (kiwix-get-libraries)
-  "A list of Kiwix libraries.")
+  (cond
+   ;; ZIM library files on remote Docker server, parse index HTML page.
+   ((eq kiwix-server-type 'docker-remote)
+    (let ((url (format "%s:%s" kiwix-server-url kiwix-server-port)))
+      (request url
+        :type "GET"
+        :sync t
+        :parser (lambda ()
+                  (let ((html (elquery-read-string (buffer-substring-no-properties (point-min) (point-max)))))
+                    (setq kiwix-libraries
+                          (mapcar
+                           ;; remove "/" from "/<zim_library_name>"
+                           (lambda (slash_library)
+                             (substring slash_library 1 nil))
+                           ;; extract plist values. list of "/<zim_library_name>"
+                           (mapcar 'cadr
+                                   ;; extract nodes properties in plist
+                                   (mapcar #'elquery-props
+                                           ;; return a list of elquery nodes
+                                           (elquery-children
+                                            ;; return the <div class="book__list">
+                                            (car (elquery-$ ".book__list" html)))))))
+                    (elquery-children (first (elquery-$ ".book__list" html)))))
+        :error (cl-function
+                (lambda (&rest args &key error-thrown &allow-other-keys)
+                  (message "Function kiwix-get-libraries error.")))
+        :success (cl-function
+                  (lambda (&key _data &allow-other-keys)
+                    _data))
+        :status-code '((404 . (lambda (&rest _) (message (format "Endpoint %s does not exist." url))))
+                       (500 . (lambda (&rest _) (message (format "Error from %s." url))))))))
+   ;; ZIM library files on local host, parse directory files.
+   ((or (eq kiwix-server-type 'kiwix-serve-local)
+        (eq kiwix-server-type 'docker-local))
+    (when (and (file-directory-p kiwix-zim-dir) (file-readable-p kiwix-zim-dir))
+      (mapcar #'kiwix--get-library-name
+              (directory-files kiwix-zim-dir nil ".*\\.zim\\'"))))))
 
 (defun kiwix-libraries-refresh ()
   "A helper function to refresh available Kiwx libraries."
-  (setq kiwix-libraries (kiwix-get-libraries)))
+  (kiwix-get-libraries))
 
 (defun kiwix-select-library (&optional filter)
   "Select Kiwix library name."
