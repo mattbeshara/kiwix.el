@@ -69,11 +69,12 @@
   :group 'kiwix)
 
 (defcustom kiwix-zim-dir
-  (file-name-directory
-   (concat
-    "~/.www.kiwix.org/kiwix"
-    (car (directory-files "~/.www.kiwix.org/kiwix" nil ".*\\.default\\'")) ; profile folder name
-    "/data/library/*.zim"))
+  (when (file-readable-p (expand-file-name "~/.www.kiwix.org/kiwix"))
+    (file-name-directory
+     (concat
+      (expand-file-name "~/.www.kiwix.org/kiwix")
+      (car (directory-files (expand-file-name "~/.www.kiwix.org/kiwix") nil ".*\\.default\\'")) ; profile folder name
+      "/data/library/*.zim")))
   "The kiwix ZIM files directory."
   :type 'string
   :safe #'stringp)
