@@ -72,7 +72,7 @@
   (file-name-directory
    (concat
     "~/.www.kiwix.org/kiwix"
-    (car (directory-files kiwix-zim-dir nil ".*\\.default\\'")) ; profile folder name
+    (car (directory-files "~/.www.kiwix.org/kiwix" nil ".*\\.default\\'")) ; profile folder name
     "/data/library/*.zim"))
   "The kiwix ZIM files directory."
   :type 'string
