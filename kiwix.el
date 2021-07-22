@@ -67,7 +67,12 @@
   "Kiwix customization options."
   :group 'kiwix)
 
-(defcustom kiwix-zim-dir "~/.www.kiwix.org/kiwix"
+(defcustom kiwix-zim-dir
+  (file-name-directory
+   (concat
+    "~/.www.kiwix.org/kiwix"
+    (car (directory-files kiwix-zim-dir nil ".*\\.default\\'")) ; profile folder name
+    "/data/library/*.zim"))
   "The kiwix ZIM files directory."
   :type 'string
   :safe #'stringp)
@@ -104,33 +109,6 @@
   "Specify kiwix server command."
   :type 'string)
 
-(defun kiwix-dir-detect ()
-  "Detect Kiwix profile directory exist."
-  (let ((kiwix-dir kiwix-zim-dir))
-    (if (and (file-directory-p kiwix-dir) (file-readable-p kiwix-dir))
-        kiwix-dir
-      (warn (format "ERROR: Kiwix profile directory %s is not accessible." kiwix-zim-dir))
-      nil)))
-
-(defcustom kiwix-default-data-profile-name
-  (when (kiwix-dir-detect)
-    (car (directory-files kiwix-zim-dir nil ".*\\.default\\'")))
-  "Specify the default Kiwix data profile path."
-  :type 'string)
-
-(defcustom kiwix-default-data-dir
-  (when (kiwix-dir-detect)
-    (concat kiwix-zim-dir kiwix-default-data-profile-name))
-  "Specify the default Kiwix data directory."
-  :type 'string
-  :safe #'stringp)
-
-(defcustom kiwix-default-library-dir
-  (file-name-directory (concat kiwix-default-data-dir "/data/library/library.xml"))
-  "Kiwix libraries path."
-  :type 'string
-  :safe #'stringp)
-
 (defcustom kiwix-default-completing-read (cond
                                           ((fboundp 'consult--read) 'selectrum)
                                           ((fboundp 'ivy-read) 'ivy)
@@ -160,9 +138,9 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
 
 (defun kiwix-get-libraries ()
   "Check out all available Kiwix libraries."
-  (when (kiwix-dir-detect)
+  (when kiwix-zim-dir
     (mapcar #'kiwix--get-library-name
-            (directory-files kiwix-default-library-dir nil ".*\\.zim\\'"))))
+            (directory-files kiwix-zim-dir nil ".*\\.zim\\'"))))
 
 (defvar kiwix-libraries (kiwix-get-libraries)
   "A list of Kiwix libraries.")
