@@ -192,7 +192,7 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
 (defun kiwix-query (query &optional selected-library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
   (let* ((library (or selected-library (kiwix--get-library-name selected-library)))
-         (url (concat (format "%s:%s" kiwix-server-url (number-to-string kiwix-server-port))
+         (url (concat (format "%s:%s" kiwix-server-url kiwix-server-port)
                       "/search?content=" library "&pattern=" (url-hexify-string query)))
          (browse-url-browser-function kiwix-default-browser-function))
     (browse-url url)))
@@ -237,7 +237,7 @@ list and return a list result."
     (let* ((library (or selected-library
                         (kiwix--get-library-name selected-library)))
            (ajax-api (format "%s:%s/suggest?content=%s&term="
-                             kiwix-server-url (number-to-string kiwix-server-port)
+                             kiwix-server-url kiwix-server-port
                              library))
            (ajax-url (concat ajax-api input))
            (data (request-response-data
@@ -259,71 +259,82 @@ list and return a list result."
        (region-beginning) (region-end))
     (thing-at-point 'symbol)))
 
+(defun kiwix--ajax-select-available-hints (zim-library)
+  "AJAX search hints on the selected library and select one term from available hints."
+  (pcase kiwix-default-completing-read
+    ('selectrum
+     (require 'selectrum)
+     (require 'consult)
+     (consult--read
+      (lambda (input)
+        (apply #'kiwix--ajax-search-hints
+               input `(,zim-library)))
+      :prompt "Kiwix related entries: "
+      :require-match nil))
+    ('ivy
+     (require 'ivy)
+     (ivy-read
+      "Kiwix related entries: "
+      (lambda (input)
+        (apply #'kiwix--ajax-search-hints
+               input `(,zim-library)))
+      :predicate nil
+      :require-match nil
+      :initial-input (kiwix--get-thing-at-point)
+      :preselect nil
+      :def nil
+      :history nil
+      :keymap nil
+      :update-fn 'auto
+      :sort t
+      :dynamic-collection t
+      :caller 'ivy-done))
+    ('helm
+     (require 'helm)
+     (helm
+      :source (helm-build-async-source "kiwix-helm-search-hints"
+                :candidates-process
+                (lambda (input)
+                  (apply #'kiwix--ajax-search-hints
+                         input `(,zim-library))))
+      :input (kiwix--get-thing-at-point)
+      :buffer "*helm kiwix completion candidates*"))
+    (_
+     (completing-read
+      "Kiwix related entries: "
+      ;; FIXME: This needs work!
+      (completion-table-dynamic
+       (lambda (input)
+         (apply #'kiwix--ajax-search-hints
+                input `(,zim-library))))
+      nil nil
+      (kiwix--get-thing-at-point)))))
+
+(defun kiwix-search-at-library (zim-library query)
+  (interactive (let ((zim-library (kiwix-select-library)))
+                 (list zim-library (kiwix--ajax-select-available-hints zim-library))))
+  (message (format "library: %s, query: %s" zim-library query))
+  (if (or (null zim-library)
+          (string-empty-p zim-library)
+          (null query)
+          (string-empty-p query))
+      (error "Your query is invalid")
+    (kiwix-query query zim-library)))
+
+(defun kiwix-search-full-context (query)
+  "Full context search QUERY in all kiwix ZIM libraries."
+  (interactive
+   (list (read-string "kiwix full context search in all libraries: ")))
+  (browse-url (format "%s:%s/search?pattern=" kiwix-server-url kiwix-server-port query)))
+
 ;;;###autoload
 (defun kiwix-at-point ()
-  "Search for the symbol at point with `kiwix-query'."
+  "Search for the symbol at point with `kiwix-search-at-library'."
   (interactive)
   (unless (kiwix-ping-server)
     (kiwix-launch-server))
   (if kiwix-server-available?
-      (progn
-        (setq kiwix--selected-library (kiwix-select-library))
-        (let* ((library kiwix--selected-library)
-               (query (pcase kiwix-default-completing-read
-                        ('selectrum
-                         (require 'selectrum)
-                         (require 'consult)
-                         (consult--read
-                          (lambda (input)
-                            (apply #'kiwix-ajax-search-hints
-                                   input `(,kiwix--selected-library)))
-                          :prompt "Kiwix related entries: "
-                          :require-match nil))
-                        ('ivy
-                         (require 'ivy)
-                         (ivy-read
-                          "Kiwix related entries: "
-                          (lambda (input)
-                            (apply #'kiwix-ajax-search-hints
-                                   input `(,kiwix--selected-library)))
-                          :predicate nil
-                          :require-match nil
-                          :initial-input (kiwix--get-thing-at-point)
-                          :preselect nil
-                          :def nil
-                          :history nil
-                          :keymap nil
-                          :update-fn 'auto
-                          :sort t
-                          :dynamic-collection t
-                          :caller 'ivy-done))
-                        ('helm
-                         (require 'helm)
-                         (helm
-                          :source (helm-build-async-source "kiwix-helm-search-hints"
-                                    :candidates-process
-                                    (lambda (input)
-                                      (apply #'kiwix-ajax-search-hints
-                                             input `(,kiwix--selected-library))))
-                          :input (kiwix--get-thing-at-point)
-                          :buffer "*helm kiwix completion candidates*"))
-                        (_
-                         (completing-read
-                          "Kiwix related entries: "
-                          ;; FIXME: This needs work!
-                          (completion-table-dynamic
-                           (lambda (input)
-                             (apply #'kiwix-ajax-search-hints
-                                    input `(,kiwix--selected-library))))
-                          nil nil
-                          (kiwix--get-thing-at-point))))))
-          (message (format "library: %s, query: %s" library query))
-          (if (or (null library)
-                  (string-empty-p library)
-                  (null query)
-                  (string-empty-p query))
-              (error "Your query is invalid")
-            (kiwix-query query library))))
+      (call-interactively 'kiwix-search-at-library)
     (warn "kiwix-serve is not available, please start it at first."))
   (setq kiwix-server-available? nil))
 
