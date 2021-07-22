@@ -149,18 +149,9 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
   "A helper function to refresh available Kiwx libraries."
   (setq kiwix-libraries (kiwix-get-libraries)))
 
-(defvar kiwix--selected-library nil
-  "Global variable of currently select library used in anonymous function.
-Like in function `kiwix-ajax-search-hints'.")
-
 (defun kiwix-select-library (&optional filter)
   "Select Kiwix library name."
   (completing-read "Kiwix library: " kiwix-libraries nil t filter))
-
-(defcustom kiwix-default-library "wikipedia_en_all.zim"
-  "The default kiwix library when library fragment in link not specified."
-  :type 'string
-  :safe #'stringp)
 
 (defcustom kiwix-mode-prefix nil
   "Specify kiwix-mode keybinding prefix before loading."
@@ -200,7 +191,7 @@ Like in function `kiwix-ajax-search-hints'.")
 
 (defun kiwix-query (query &optional selected-library)
   "Search `QUERY' in `LIBRARY' with Kiwix."
-  (let* ((library (or selected-library (kiwix--get-library-name kiwix-default-library)))
+  (let* ((library (or selected-library (kiwix--get-library-name selected-library)))
          (url (concat (format "%s:%s" kiwix-server-url (number-to-string kiwix-server-port))
                       "/search?content=" library "&pattern=" (url-hexify-string query)))
          (browse-url-browser-function kiwix-default-browser-function))
@@ -223,7 +214,7 @@ Like in function `kiwix-ajax-search-hints'.")
        (or (kiwix-docker-check)
            (async-shell-command "docker pull kiwix/kiwix-serve")))
   (let ((inhibit-message t))
-    (request (format "%s:%s" kiwix-server-url (number-to-string kiwix-server-port))
+    (request (format "%s:%s" kiwix-server-url kiwix-server-port)
       :type "GET"
       :sync t
       :parser (lambda () (libxml-parse-html-region (point-min) (point-max)))
@@ -238,14 +229,13 @@ Like in function `kiwix-ajax-search-hints'.")
       :status-code '((404 . (lambda (&rest _) (message (format "Endpoint %s does not exist." url))))
                      (500 . (lambda (&rest _) (message (format "Error from  %s." url))))))))
 
-(defun kiwix-ajax-search-hints (input &optional selected-library)
+(defun kiwix--ajax-search-hints (input &optional selected-library)
   "Instantly AJAX request to get available Kiwix entry keywords
 list and return a list result."
   (kiwix-ping-server)
   (when (and input kiwix-server-available?)
     (let* ((library (or selected-library
-                        (kiwix--get-library-name (or kiwix--selected-library
-                                                     kiwix-default-library))))
+                        (kiwix--get-library-name selected-library)))
            (ajax-api (format "%s:%s/suggest?content=%s&term="
                              kiwix-server-url (number-to-string kiwix-server-port)
                              library))
