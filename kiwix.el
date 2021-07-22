@@ -175,16 +175,8 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
   "Global variable of currently select library used in anonymous function.
 Like in function `kiwix-ajax-search-hints'.")
 
-;; - examples:
-;; - "wikipedia_en_all" - "wikipedia_en_all_2016-02"
-;; - "wikipedia_zh_all" - "wikipedia_zh_all_2015-17"
-;; - "wiktionary_en_all" - "wiktionary_en_all_2015-17"
-;; - "wiktionary_zh_all" - "wiktionary_zh_all_2015-17"
-;; - "wikipedia_en_medicine" - "wikipedia_en_medicine_2015-17"
-
 (defun kiwix-select-library (&optional filter)
   "Select Kiwix library name."
-  (kiwix-libraries-refresh)
   (completing-read "Kiwix library: " kiwix-libraries nil t filter))
 
 (defcustom kiwix-default-library "wikipedia_en_all.zim"
