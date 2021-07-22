@@ -361,7 +361,7 @@ list and return a list result."
   "Full context search QUERY in all kiwix ZIM libraries."
   (interactive
    (list (read-string "kiwix full context search in all libraries: ")))
-  (browse-url (format "%s:%s/search?pattern=" kiwix-server-url kiwix-server-port query)))
+  (browse-url (format "%s:%s/search?pattern=%s" kiwix-server-url kiwix-server-port query)))
 
 ;;;###autoload
 (defun kiwix-at-point ()
