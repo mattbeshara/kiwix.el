@@ -81,9 +81,9 @@
 
 (defcustom kiwix-server-type 'docker-remote
   "Specify the kiwix-serve type.
-- remote docker service
-- local docker service
-- local kiwix-serve service"
+- 'docker-remote :: remote docker service
+- 'docker-local  :: local docker service
+- 'kiwix-serve-local :: local kiwix-serve service"
   :type '(choice
           (const :tag "Remote Docker Service" docker-remote)
           (const :tag "Local Docker Service" docker-local)
