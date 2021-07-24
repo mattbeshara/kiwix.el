@@ -242,6 +242,7 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
 (defvar kiwix-server-available? nil
   "The kiwix-server current available?")
 
+;;;###autoload
 (defun kiwix-ping-server ()
   "Ping Kiwix server to set `kiwix-server-available?' global state variable."
   (and (eq kiwix-server-type 'docker-local)
@@ -344,7 +345,9 @@ list and return a list result."
       nil nil
       (kiwix--get-thing-at-point)))))
 
+;;;###autoload
 (defun kiwix-search-at-library (zim-library query)
+  "Search QUERY in selected ZIM library."
   (interactive (let ((zim-library (kiwix-select-library)))
                  (list zim-library (kiwix--ajax-select-available-hints zim-library))))
   (message (format "library: %s, query: %s" zim-library query))
@@ -355,8 +358,9 @@ list and return a list result."
       (error "Your query is invalid")
     (kiwix-query query zim-library)))
 
+;;;###autoload
 (defun kiwix-search-full-context (query)
-  "Full context search QUERY in all kiwix ZIM libraries."
+  "Full context search QUERY in all kiwix ZIM libraries. It's very slow."
   (interactive
    (list (read-string "kiwix full context search in all libraries: ")))
   (browse-url (format "%s:%s/search?pattern=%s" kiwix-server-url kiwix-server-port query)))
