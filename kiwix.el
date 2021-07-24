@@ -79,7 +79,7 @@
   :type 'string
   :safe #'stringp)
 
-(defcustom kiwix-server-type 'docker-remote
+(defcustom kiwix-server-type 'docker-local
   "Specify the kiwix-serve type.
 - 'docker-remote :: remote docker service
 - 'docker-local  :: local docker service
