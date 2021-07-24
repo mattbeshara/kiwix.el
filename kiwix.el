@@ -182,12 +182,9 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
       (mapcar #'kiwix--get-library-name
               (directory-files kiwix-zim-dir nil ".*\\.zim\\'"))))))
 
-(defun kiwix-libraries-refresh ()
-  "A helper function to refresh available Kiwx libraries."
-  (kiwix-get-libraries))
-
 (defun kiwix-select-library (&optional filter)
   "Select Kiwix library name."
+  (kiwix-get-libraries)
   (completing-read "Kiwix library: " kiwix-libraries nil t filter))
 
 (defcustom kiwix-mode-prefix nil
