@@ -61,6 +61,7 @@
 (require 'subr-x)
 (require 'thingatpt)
 (require 'json)
+(require 'dom)
 
 (declare-function helm "helm")
 (declare-function helm-build-async-source "helm")
@@ -155,8 +156,23 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
         :type "GET"
         :sync t
         :parser (lambda ()
-                  (if (not (featurep 'elquery))
-                      (print "PLACEHOLDER: use libxml by default")
+                  (if (libxml-available-p) ; (and (not (featurep 'elquery)) (libxml-available-p))
+                      (let ((document (libxml-parse-html-region (point-min) (point-max))))
+                        (setq kiwix-libraries
+                              (mapcar
+                               ;; remove "/" from "/<zim_library_name>"
+                               (lambda (slash_library)
+                                 (substring slash_library 1 nil))
+                               ;; list of "/<zim_library_name>"
+                               (mapcar
+                                (lambda (a)
+                                  (dom-attr a 'href))
+                                (dom-by-tag
+                                 (dom-by-class
+                                  (dom-by-class document "kiwix") ; <div class="kiwix">
+                                  "book__list")                   ; <div class="book__list">
+                                 'a) ; <a href="/wikipedia_zh_all_maxi_2021-03">
+                                ))))
                     (require 'elquery)
                     (let ((html (elquery-read-string
                                  (buffer-substring-no-properties (point-min) (point-max)))))
