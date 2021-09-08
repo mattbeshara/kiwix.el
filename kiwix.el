@@ -216,6 +216,8 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
   "Specify kiwix-mode keybinding prefix before loading."
   :type 'kbd)
 
+(defvar kiwix--server-process nil
+  "Local server process launched by ‘kiwix-launch-server’.")
 
 ;; launch Kiwix server
 ;;;###autoload
@@ -236,13 +238,21 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
                       "-p" (format "%s:80" kiwix-server-port)
                       "kiwix/kiwix-serve"
                       "--library" "library.xml"))
-      ('kiwix-serve-local (start-process
-                           "kiwix-server"
-                           " *kiwix server*"
-                           kiwix-server-command
-                           "--port" (number-to-string kiwix-server-port)
-                           "--daemon"
-                           "--library" (concat library-path "library.xml"))))))
+      ('kiwix-serve-local
+       (setq kiwix--server-process
+             (start-process
+              "kiwix-server"
+              " *kiwix server*"
+              kiwix-server-command
+              "--port" (number-to-string kiwix-server-port)
+              "--library" (concat kiwix-zim-dir "library.xml")))))))
+
+(defun kiwix-stop-local-server ()
+  "Stops a Kiwix server started by ‘kiwix-launch-server’."
+  (interactive)
+  (when kiwix--server-process
+    (kill-process kiwix--server-process)
+    (setq kiwix--server-process nil)))
 
 (defun kiwix-capitalize-first (string)
   "Only capitalize the first word of STRING."
