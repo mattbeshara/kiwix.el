@@ -79,7 +79,7 @@
       (expand-file-name "~/.www.kiwix.org/kiwix")
       (car (directory-files (expand-file-name "~/.www.kiwix.org/kiwix") nil ".*\\.default\\'")) ; profile folder name
       "/data/library/*.zim")))
-  "The kiwix ZIM files directory."
+  "The kiwix ZIM files directory.  Must end with a slash."
   :type 'string
   :safe #'stringp)
 
