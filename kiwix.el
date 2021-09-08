@@ -222,7 +222,7 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
 (defun kiwix-launch-server ()
   "Launch Kiwix server."
   (interactive)
-  (let ((library-path kiwix-default-library-dir))
+  (let ((library-path kiwix-zim-dir))
     (cl-case kiwix-server-type
       ('docker-remote
        (message "kiwix-serve service is started by user manually at other place."))
