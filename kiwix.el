@@ -245,7 +245,7 @@ Set it to ‘t’ will use Emacs built-in ‘completing-read’."
               " *kiwix server*"
               kiwix-server-command
               "--port" (number-to-string kiwix-server-port)
-              "--library" (concat kiwix-zim-dir "library.xml")))))))
+              "--library" (concat kiwix-zim-dir "/library.xml")))))))
 
 (defun kiwix-stop-local-server ()
   "Stops a Kiwix server started by ‘kiwix-launch-server’."
