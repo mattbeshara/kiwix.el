@@ -373,11 +373,12 @@ list and return a list result."
     ('helm
      (require 'helm)
      (helm
-      :source (helm-build-async-source "kiwix-helm-search-hints"
-                :candidates-process
-                (lambda (input)
-                  (apply #'kiwix--ajax-search-hints
-                         input `(,zim-library))))
+      :source (helm-build-async-source
+               "kiwix-helm-search-hints"
+               :candidates-process
+               (lambda (input)
+                 (apply #'kiwix--ajax-search-hints
+                        input `(,zim-library))))
       :input (kiwix--get-thing-at-point)
       :buffer "*helm kiwix completion candidates*"))
     (_
