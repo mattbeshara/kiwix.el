@@ -93,6 +93,7 @@
                  (t link)))
          (url (concat
                kiwix-server-url
+               ":" (number-to-string kiwix-server-port)
                "/" library "/A/"
                ;; query need to be convert to URL encoding: "禅宗" https://zh.wikipedia.org/wiki/%E7%A6%85%E5%AE%97
                (url-encode-url
