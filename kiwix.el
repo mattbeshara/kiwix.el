@@ -116,6 +116,7 @@
   :type 'string)
 
 (defcustom kiwix-default-completing-read (cond
+                                          ((fboundp 'vertico--all-completions) 'vertico)
                                           ((fboundp 'consult--read) 'selectrum)
                                           ((fboundp 'ivy-read) 'ivy)
                                           ((fboundp 'helm) 'helm)
@@ -333,6 +334,15 @@ list and return a list result."
 (defun kiwix--ajax-select-available-hints (zim-library)
   "AJAX search hints on the selected library and select one term from available hints."
   (pcase kiwix-default-completing-read
+    ('vertico
+     (require 'vertico)
+     (require 'consult)
+     (consult--read
+      (lambda (input)
+        (apply #'kiwix--ajax-search-hints
+               input `(,zim-library)))
+      :prompt "Kiwix related entries: "
+      :require-match nil))
     ('selectrum
      (require 'selectrum)
      (require 'consult)
