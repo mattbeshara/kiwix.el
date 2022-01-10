@@ -102,7 +102,8 @@
                  ;; only capitalize the first word. like: "meta-circular interpreter" -> "Meta-circular interpreter"
                  (kiwix-capitalize-first query)
                  nil nil))
-               ".html")))
+               ;; ".html"
+               )))
     ;; (prin1 (format "library: %s, query: %s, url: %s" library query url))
     (browse-url url)))
 
